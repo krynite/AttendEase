@@ -5,7 +5,7 @@
 05/03/2025 - Checked the different methods of executing attendance checking. Did wireframe, working on schema required for method #2.
 
 [Google Sheet] (https://docs.google.com/spreadsheets/d/1BvGv4GDCH6sHLFVHaXiad9WaoPsU6QSidF0pOPnRFIE/edit?gid=0#gid=0)
-[Git Link] (https://github.com/krynite/AttendEase.git)
+[Github] (https://github.com/krynite/AttendEase.git)
 [Wireframe Draft #1 ] (https://app.diagrams.net/#G12QMcfNlioNEfuG7n2y5zXprSsUp4VPy2#%7B%22pageId%22%3A%22NXnltCqFs-8ik3Dpo3br%22%7D)
 [Trello TBC]
 
