@@ -7,6 +7,9 @@ const methodOverride = require("method-override");
 const logger = require("morgan");
 const cors = require("cors");
 
+// Importing routers
+const userRouter = require("./controllers/users");
+
 // Set the port from environment variable or default to 3000
 const port = process.env.PORT ? process.env.PORT : "3000";
 mongoose.connect(process.env.MONGODB_URI);
@@ -33,7 +36,7 @@ app.use(methodOverride("_method")); // Tracking methods
 // });
 
 //Routes
-app.use("/", 
+app.use("/users", userRouter);
 
 app.listen(port, () => {
   console.log(`The express app is ready on port ${port}!`);
