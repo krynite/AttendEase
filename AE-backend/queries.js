@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const mongoose = require("mongoose");
 const User = require("./models/user");
+const Student = require("./models/student");
 
 const bcrypt = require("bcrypt");
 
@@ -39,6 +40,33 @@ const createDefaultUsers = async () => {
   console.log(users);
 };
 
+const createDefaultStudents = async () => {
+  await Student.deleteMany();
+  const defaultStudents = await Student.create([
+    {
+      fullname: "Morgan",
+      studentIc: "T1111111H",
+      dateOfBirth: 1357035968,
+      enrollStatus: "active",
+      scfaStatus: "active-beneficiary",
+    },
+    {
+      fullname: "Jane",
+      studentIc: "T2222222J",
+      dateOfBirth: 1262275200,
+      enrollStatus: "active",
+      scfaStatus: "none-beneficiary",
+    },
+    {
+      fullname: "Steven",
+      studentIc: "T3333333L",
+      dateOfBirth: 1293811200,
+      enrollStatus: "active",
+      scfaStatus: "former-beneficiary",
+    },
+  ]);
+};
+
 // const testingUpdateStatus = async () => {
 //   //! works, but why the express side not working................
 //   // for testing updating status from pending to accepted.
@@ -59,6 +87,7 @@ const createDefaultUsers = async () => {
 const runQueries = async () => {
   console.log(`runQueris is running.`);
   await createDefaultUsers(); // Create Default users.
+  //await createDefaultStudents();
 };
 
 connect();

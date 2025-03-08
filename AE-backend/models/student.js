@@ -3,24 +3,14 @@ const { Schema, model } = mongoose;
 
 const studentsSchema = new Schema(
   {
-    fullname: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    studentIc: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    dateOfBirth: {
-      type: Date,
-      required: true,
-    },
     enrollStatus: {
       type: String,
       required: true,
       enum: ["active", "inactive"],
+    },
+    enrollDate: {
+      type: Date,
+      required: true,
     },
     scfaStatus: {
       type: String,
@@ -32,6 +22,31 @@ const studentsSchema = new Schema(
         "pending",
         "denied",
       ],
+    },
+    role: {
+      type: String,
+      required: true,
+      enum: ["student"],
+    },
+    fullname: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    gender: {
+      type: String,
+      required: true,
+      enum: ["m", "male", "f", "female"],
+    },
+
+    studentIc: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    dateOfBirth: {
+      type: Date,
+      required: true,
     },
   },
   { timestamps: true }
