@@ -28,15 +28,10 @@ const studentsSchema = new Schema(
       required: true,
       enum: ["student"],
     },
-    fullname: {
+    studentName: {
       type: String,
       required: true,
       trim: true,
-    },
-    gender: {
-      type: String,
-      required: true,
-      enum: ["m", "male", "f", "female"],
     },
 
     studentIc: {
@@ -46,6 +41,23 @@ const studentsSchema = new Schema(
     },
     dateOfBirth: {
       type: Date,
+      required: true,
+    },
+    gender: {
+      type: String,
+      required: true,
+      enum: ["m", "male", "f", "female"],
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    schoolName: {
+      type: String,
+      required: true,
+    },
+    schoolNumber: {
+      type: Number,
       required: true,
     },
   },

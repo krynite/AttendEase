@@ -39,30 +39,48 @@ const createDefaultUsers = async () => {
   ]);
   console.log(users);
 };
-
+// Used epoch dates: https://www.epochconverter.com/
 const createDefaultStudents = async () => {
   await Student.deleteMany();
   const defaultStudents = await Student.create([
     {
-      fullname: "Morgan",
-      studentIc: "T1111111H",
-      dateOfBirth: 1357035968,
       enrollStatus: "active",
+      enrollDate: 1735776000000,
       scfaStatus: "active-beneficiary",
+      role: "student",
+      studentName: "Morgan",
+      studentIc: "T1111111H",
+      dateOfBirth: 1356998400000,
+      gender: "male",
+      address: "123 Road",
+      schoolName: "ASD School",
+      schoolNumber: 66554433,
     },
     {
-      fullname: "Jane",
-      studentIc: "T2222222J",
-      dateOfBirth: 1262275200,
       enrollStatus: "active",
-      scfaStatus: "none-beneficiary",
+      enrollDate: 1735776000000,
+      scfaStatus: "non-beneficiary",
+      role: "student",
+      studentName: "Jane",
+      studentIc: "T2222222H",
+      dateOfBirth: 1262304000000,
+      gender: "female",
+      address: "321 Road",
+      schoolName: "ASD School",
+      schoolNumber: 66554433,
     },
     {
-      fullname: "Steven",
-      studentIc: "T3333333L",
-      dateOfBirth: 1293811200,
       enrollStatus: "active",
-      scfaStatus: "former-beneficiary",
+      enrollDate: 1735776000000,
+      scfaStatus: "active-beneficiary",
+      role: "student",
+      studentName: "Steven",
+      studentIc: "T3333333H",
+      dateOfBirth: 1293840000000,
+      gender: "male",
+      address: "3245 Road",
+      schoolName: "ASD School",
+      schoolNumber: 66554433,
     },
   ]);
 };
@@ -86,8 +104,8 @@ const createDefaultStudents = async () => {
 //TODO Remember to use AWAIT before running the functions
 const runQueries = async () => {
   console.log(`runQueris is running.`);
-  await createDefaultUsers(); // Create Default users.
-  //await createDefaultStudents();
+  // await createDefaultUsers(); // Create Default users.
+  await createDefaultStudents();
 };
 
 connect();

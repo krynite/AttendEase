@@ -1,0 +1,17 @@
+meta {
+  name: Student
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{HOST}}/students
+  body: none
+  auth: none
+}
+
+body:json {
+  {
+    "fullname": "Morgan"
+  }
+}
