@@ -5,7 +5,6 @@ dotenv.config();
 const mongoose = require("mongoose");
 const User = require("./models/user");
 
-// const Hoot = require("./models/hoot");
 const bcrypt = require("bcrypt");
 
 const connect = async () => {
@@ -13,11 +12,8 @@ const connect = async () => {
   await mongoose.connect(process.env.MONGODB_URI);
   console.log("Connected to MongoDB");
 
-  // Call the runQueries function, which will eventually hold functions to work
-  // with data in our db.
   await runQueries();
 
-  // Disconnect our app from MongoDB after our queries run.
   await mongoose.disconnect();
   console.log("Disconnected from MongoDB");
 
@@ -29,20 +25,16 @@ const createDefaultUsers = async () => {
   //! ONLY USE THIS TO RESET TO DEFAULT USERS
   // https://www.npmjs.com/package/bcrypt
   await User.deleteMany({});
-  const saltRounds = 10;
+  const saltRounds = 12;
   const users = await User.create([
     {
       username: "TestUser1",
-      password: "123",
-      // hashedPassword: bcrypt.hashSync("123", saltRounds),
+      hashedPassword: bcrypt.hashSync("123", saltRounds),
     },
     {
       username: "TestUser2",
-      password: "123",
-      //hashedPassword: bcrypt.hashSync("123", saltRounds),
+      hashedPassword: bcrypt.hashSync("123", saltRounds),
     },
-    // { username: "aaa", password: "aaa" },
-    // { username: "bbb", password: "bbb" },
   ]);
   console.log(users);
 };
@@ -66,7 +58,7 @@ const createDefaultUsers = async () => {
 //TODO Remember to use AWAIT before running the functions
 const runQueries = async () => {
   console.log(`runQueris is running.`);
-  await createDefaultUsers(); //! ONLY USE THIS TO RESET TO DEFAULT USERS
+  await createDefaultUsers(); // Create Default users.
 };
 
 connect();

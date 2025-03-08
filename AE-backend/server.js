@@ -8,7 +8,9 @@ const logger = require("morgan");
 const cors = require("cors");
 
 // Importing routers
+
 const userRouter = require("./controllers/users");
+const authRouter = require("./controllers/auth");
 
 // Set the port from environment variable or default to 3000
 const port = process.env.PORT ? process.env.PORT : "3000";
@@ -36,6 +38,7 @@ app.use(methodOverride("_method")); // Tracking methods
 // });
 
 //Routes
+app.use("/auth", authRouter);
 app.use("/users", userRouter);
 
 app.listen(port, () => {
