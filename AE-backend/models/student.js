@@ -3,12 +3,35 @@ const { Schema, model } = mongoose;
 
 const studentsSchema = new Schema(
   {
-    requester: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    recipient: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    status: {
+    fullname: {
       type: String,
-      enum: ["pending", "accepted", "declined"],
-      default: "pending",
+      required: true,
+      trim: true,
+    },
+    studentIc: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    dateOfBirth: {
+      type: Date,
+      required: true,
+    },
+    enrollStatus: {
+      type: String,
+      required: true,
+      enum: ["active", "inactive"],
+    },
+    scfaStatus: {
+      type: String,
+      required: true,
+      enum: [
+        "active-beneficiary",
+        "non-beneficiary",
+        "former-beneficiary",
+        "pending",
+        "denied",
+      ],
     },
   },
   { timestamps: true }

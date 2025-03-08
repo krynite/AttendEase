@@ -4,7 +4,7 @@ const router = express.Router();
 const User = require("../middleware/verify-token");
 const verifyToken = require("../middleware/verify-token");
 
-router.get("/", async (req, res) => {
+router.get("/", verifyToken, async (req, res) => {
   try {
     const users = await User.find({}, "username");
 
@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:userId", async (req, res) => {
+router.get("/:userId", verifyToken, async (req, res) => {
   //test init login
   try {
     if (req.user._id !== req.params.userId) {
