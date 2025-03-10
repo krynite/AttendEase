@@ -5,6 +5,7 @@ dotenv.config();
 const mongoose = require("mongoose");
 const User = require("./models/user");
 const Student = require("./models/student");
+const Attendance = require("./models/attendance");
 
 const bcrypt = require("bcrypt");
 
@@ -83,6 +84,22 @@ const createDefaultStudents = async () => {
       schoolNumber: 66554433,
     },
   ]);
+  console.log(defaultStudents);
+};
+
+const testInsertAttendanceRecords = async () => {
+  // Test scan in for students
+};
+
+const testInsertAttendance = async () => {
+  // Test Attendance Update
+  await Attendance.deleteMany();
+  const defaultAttendance = await Attendance.create([
+    {
+      attendanceName: "67cc53f896b207298ef1ecca",
+      attendanceDate: 1741564800,
+    },
+  ]);
 };
 
 // const testingUpdateStatus = async () => {
@@ -105,7 +122,9 @@ const createDefaultStudents = async () => {
 const runQueries = async () => {
   console.log(`runQueris is running.`);
   // await createDefaultUsers(); // Create Default users.
-  await createDefaultStudents();
+  // await createDefaultStudents();
+  // await testInsertAttendanceRecords();
+  await testInsertAttendance();
 };
 
 connect();
