@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const User = require("./models/user");
 const Student = require("./models/student");
 const Attendance = require("./models/attendance");
+const AttendanceRecord = require("./models/attendanceRecords");
 
 const bcrypt = require("bcrypt");
 
@@ -88,7 +89,32 @@ const createDefaultStudents = async () => {
 };
 
 const testInsertAttendanceRecords = async () => {
+  await AttendanceRecord.deleteMany();
+
+  //TODO Testing for SCFA True and Met req
   // Test scan in for students
+  const firstTime = 1741598893000; // 9:28am
+  const secondTime = 1741620493000; // 3:28am
+  // Calc Difference
+  const epochDiff = Math.abs(secondTime - firstTime);
+  const epochDiffHours = epochDiff / (1000 * 60 * 60);
+  // SCFA????
+  const scfaBeneficiary = true;
+  let scfaReq = "NA";
+
+  if (scfaBeneficiary) {
+    scfaReq = epochDiffHours >= 4 ? "true" : "false";
+  }
+
+  const testAttendanceRecords = await AttendanceRecord.create([
+    {
+      timeIn: firstTime,
+      timeOut: secondTime,
+      timeDuration: epochDiff,
+      requirementsMet: scfaReq,
+    },
+  ]);
+  console.log(testAttendanceRecords);
 };
 
 const testInsertAttendance = async () => {
@@ -123,8 +149,8 @@ const runQueries = async () => {
   console.log(`runQueris is running.`);
   // await createDefaultUsers(); // Create Default users.
   // await createDefaultStudents();
-  // await testInsertAttendanceRecords();
-  await testInsertAttendance();
+  // await testInsertAttendance(); //TODO Direct to DB works.
+  await testInsertAttendanceRecords();
 };
 
 connect();

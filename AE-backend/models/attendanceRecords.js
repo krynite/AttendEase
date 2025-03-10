@@ -19,6 +19,8 @@ const attendanceRecordsSchema = new Schema({
     type: String,
     enum: ["NA", "true", "false"], // NA for those not SCFA
     default: "NA",
+    // type: Number,
+    // default: 0,
   },
 });
 

@@ -35,5 +35,3 @@ router.get("/:userId", verifyToken, async (req, res) => {
 });
 
 module.exports = router;
-
-module.exports = router;
