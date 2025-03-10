@@ -93,15 +93,17 @@ const testInsertAttendanceRecords = async () => {
 
   //TODO Testing for SCFA True and Met req
   // Test scan in for students
-  const firstTime = 1741598893000; // 9:28am
-  const secondTime = 1741620493000; // 3:28am
-  // Calc Difference
+  const firstTime = 1741598893000; // 9:28am 10th March 2025
+  const secondTime = 1741620493000; // 3:28pm 10th Match 2025
+  // Calc Difference  - //! Migrated to virtual in schema
   const epochDiff = Math.abs(secondTime - firstTime);
   const epochDiffHours = epochDiff / (1000 * 60 * 60);
-  // SCFA????
+  console.log(`Time Difference: ${epochDiff}`);
+  console.log(`Time Difference in Hours: ${epochDiffHours}`);
+
+  // SCFA?
   const scfaBeneficiary = true;
   let scfaReq = "NA";
-
   if (scfaBeneficiary) {
     scfaReq = epochDiffHours >= 4 ? "true" : "false";
   }
@@ -110,11 +112,23 @@ const testInsertAttendanceRecords = async () => {
     {
       timeIn: firstTime,
       timeOut: secondTime,
-      timeDuration: epochDiff,
+      // timeDuration: epochDiff,  // Testing virtuals first.
       requirementsMet: scfaReq,
     },
   ]);
+
+  // To see in hours and minutes
+  const durationMins = Math.floor(
+    testAttendanceRecords[0].timeDuration / (1000 * 60)
+  );
+  const durationHours = Math.floor(durationMins / 60);
+
+  const dateFormat = Date(testAttendanceRecords[0].timeDuration);
   console.log(testAttendanceRecords);
+  console.log("Test Virtual Duration:", testAttendanceRecords[0].timeDuration); //! VIRTUAL WORKS!!!
+  console.log(
+    `Hours and Min Format: ${durationHours} Hours or ${durationMins} Minutes.` // works!
+  );
 };
 
 const testInsertAttendance = async () => {

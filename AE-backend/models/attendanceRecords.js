@@ -10,11 +10,11 @@ const attendanceRecordsSchema = new Schema({
     type: Date,
     required: true,
   },
-  timeDuration: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
+  //   timeDuration: {      //! Testing virtual below
+  //     type: Number,
+  //     required: true,
+  //     default: 0,
+  //   },
   requirementsMet: {
     type: String,
     enum: ["NA", "true", "false"], // NA for those not SCFA
@@ -22,6 +22,12 @@ const attendanceRecordsSchema = new Schema({
     // type: Number,
     // default: 0,
   },
+});
+
+attendanceRecordsSchema.virtual("timeDuration").get(function () {
+  if (this.timeIn && this.timeOut) {
+    return Math.abs(this.timeOut - this.timeIn);
+  }
 });
 
 module.exports = model("Records", attendanceRecordsSchema);
