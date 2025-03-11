@@ -33,3 +33,25 @@ Front-end:
 Back-end: 2. Further breaking down the steps. 2. There will be one schema for "Record" checking, and another purely for "Attendence". 3. "Records" will receive and create a log. This schema will have 2 different timelog data. 1st Timelog = First login of the day. 2nd Timelog = Last login of the day. 4. Any new scanned keys after the first login will update only the 2nd Timelog. 5. Once there is data on the 2nd Timelog, will create a new data in "Attendence". 6. "Attendence" contains the information for if the special students meet the 4hrs.
 
 We are separating the "Attendance" and Records, so "Attendance" can be quickly used for filters in the frontend. So most of the computing will be done on the back with the "Records".
+
+07/03/2025 - Initial Tests
+
+Consultation:
+
+1. Streamlined schema. change status from bool type to string for future flexibility. Removed certain referencing to prevent future search issues.
+
+07/03/2025
+
+1. Ensure JWT token is working with Users (done)
+2. Setup function in queries.js to clear and setup base Users. (done)
+3. Create studentSchema and create base students (done)
+
+10/3/2025
+
+4. Setup base attendence in queries for the base students.(done)
+5. Test attendanceRecords with queires. Manual insert data (done)
+
+11/03/2025 6. Test attendanceRecords via Express: verify the method that is used for attendance.
+first post checks if there are records. if non, create timeIn.
+second post checks if there are records, if yes, create/update timeOut.
+n post checks if there are records, if yes, update timeOut. 7. Ensure Bruno is able to do all of the above without Queries.js 8. Init Frontend.

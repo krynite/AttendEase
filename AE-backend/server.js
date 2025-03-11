@@ -12,6 +12,7 @@ const cors = require("cors");
 const userRouter = require("./controllers/users");
 const authRouter = require("./controllers/auth");
 const studentRouter = require("./controllers/students");
+const attendanceRouter = require("./controllers/attendances");
 
 // Set the port from environment variable or default to 3000
 const port = process.env.PORT ? process.env.PORT : "3000";
@@ -42,6 +43,7 @@ app.use(methodOverride("_method")); // Tracking methods
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/students", studentRouter);
+app.use("/attendance", attendanceRouter);
 
 app.listen(port, () => {
   console.log(`The express app is ready on port ${port}!`);

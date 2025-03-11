@@ -10,7 +10,7 @@ const attendanceRecordsSchema = new Schema({
     type: Date,
     required: true,
   },
-  //   timeDuration: {      //! Testing virtual below
+  //   timeDuration: {      //! Testing virtual below (works)
   //     type: Number,
   //     required: true,
   //     default: 0,

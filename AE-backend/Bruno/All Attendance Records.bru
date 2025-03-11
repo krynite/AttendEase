@@ -1,0 +1,17 @@
+meta {
+  name: All Attendance Records
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{HOST}}/students
+  body: none
+  auth: inherit
+}
+
+body:json {
+  {
+    "fullname": "Morgan"
+  }
+}
