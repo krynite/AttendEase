@@ -30,4 +30,6 @@ attendanceRecordsSchema.virtual("timeDuration").get(function () {
   }
 });
 
+// (OPTIONAL) Can write another virtual. If timeIn === timeOut, return "student forgot to sign out".
+
 module.exports = model("Records", attendanceRecordsSchema);
