@@ -52,6 +52,6 @@ Consultation:
 5. Test attendanceRecords with queires. Manual insert data (done)
 
 11/03/2025 6. Test attendanceRecords via Express: verify the method that is used for attendance.
-first post checks if there are records. if non, create timeIn.
-second post checks if there are records, if yes, create/update timeOut.
+first post checks if there are records. if non, create timeIn. (done)
+second post checks if there are records, if yes, edit- udpate Records array (still figuring out)
 n post checks if there are records, if yes, update timeOut. 7. Ensure Bruno is able to do all of the above without Queries.js 8. Init Frontend.

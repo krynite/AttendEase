@@ -79,7 +79,7 @@ router.post("/", verifyToken, async (req, res) => {
 
 // testing scan in  //TODO can rename from update to scan later
 router.post("/scanToday", verifyToken, async (req, res) => {
-  const { id, timeAll } = req.body;
+  const { id, timeAll } = req.body; // id = student mongodbId, timeAll = scanned Time or Timestamp
 
   if (!id) {
     return res.status(400).json({ err: "ID missing in body." });
@@ -104,26 +104,30 @@ router.post("/scanToday", verifyToken, async (req, res) => {
     //find if attendance exist
     let attendance = await Attendance.findOne({
       attendanceName: id,
-      attendanceDate: {         // range 00:00:00 to 23:59:59
-        $gte: startOfDay,
-        $lte: endOfDay,
+      attendanceDate: {
+        // range 00:00:00 to 23:59:59
+        $gte: startOfDay, // >=   Link: https://www.mongodb.com/docs/manual/reference/operator/query/
+        $lte: endOfDay, // <=
       },
-
-      if(!attendance){ //if nth than create. else update
-        //create
-        const newAttendance = await Attendance.create({
-            attendanceName: id,
-            attendanceDate: today,
-            attehdanceRecords: [{
-                timeIn = timeAll,
-                timeOut = timeAll,          //TODO: Think if wanna cheat and change require status to false. Hahaha
-            }]
-
-        })
-
-
-      }
     });
+
+    if (!attendance) {
+      //if nth than create. else update
+      //create
+      const newAttendance = await Attendance.create({
+        attendanceName: id,
+        attendanceDate: today,
+        attendanceRecords: [
+          {
+            timeIn: timeAll,
+            timeOut: timeAll, //TODO: Think if wanna cheat and change require status to false. Hahaha
+            requirementsMet: "NA",
+          },
+        ],
+      });
+    } else {
+      //TODO: Write track last Idx and create record with the new Idx
+    }
   } catch (err) {
     return res.status(500).json({ err: err.message });
   }
