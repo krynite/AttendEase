@@ -5,6 +5,7 @@ const { Schema, model } = mongoose;
 const Attendance = require("../models/attendance");
 const Student = require("../models/student");
 const verifyToken = require("../middleware/verify-token");
+const student = require("../models/student");
 
 // HTML codes: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
 
@@ -154,6 +155,13 @@ router.post("/scanToday", verifyToken, async (req, res) => {
         const lastRecord = attendance.attendanceRecords[lastRecordsIdx];
         lastRecord.timeOut = convertedTimeAll;
         //TODO: Write check for scfaStatus from students. If yes, tabulate if more than 4 hrs. if more = "true" else "false"
+        if (studentId.scfaStatus === "active-beneficiary") {
+          console.log(`LastRecord TimeOut : ${lastRecord.timeOut}`);
+          console.log(`LastRecord TimeIn : ${lastRecord.timeIn}`);
+          const hoursDiff =
+            Math.abs(lastRecord.timeOut - lastRecord.timeIn) / (1000 * 60 * 60);
+          lastRecord.requirementsMet = hoursDiff >= 4 ? "true" : "false";
+        }
       }
       await attendance.save();
     }
