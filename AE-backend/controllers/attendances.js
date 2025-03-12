@@ -80,7 +80,7 @@ router.post("/", verifyToken, async (req, res) => {
 
 // testing scan in  //TODO can rename from update to scan later
 router.post("/scanToday", verifyToken, async (req, res) => {
-  const { id, timeAll } = req.body; // id = student mongodbId, timeAll = scanned Time or Timestamp
+  const { id, timeAll } = req.body; // id = student mongodbId, timeAll = scanned Time or Timestamp to MILLESECONDS!! 13 digits
 
   if (!id) {
     return res.status(400).json({ err: "ID missing in body." });
@@ -142,7 +142,7 @@ router.post("/scanToday", verifyToken, async (req, res) => {
       //   console.log(`Checking Error Depth #2`); //! Checking Error Depth
     } else {
       //TODO: Write track last Idx and create record with the new Idx
-      const lastRecordsIdx = attendance.attendanceRecords.length - 1;
+      const lastRecordsIdx = attendance.attendanceRecords.length - 1; // .length is either 1 or 2, Idx is either 0 or 1
 
       // If no records, create 1st record
       if (attendance.attendanceRecords.length === 0) {
@@ -151,27 +151,62 @@ router.post("/scanToday", verifyToken, async (req, res) => {
           timeOut: convertedTimeAll,
           requirementsMet: "NA",
         });
+        await attendance.save();
       } else {
-        const lastRecord = attendance.attendanceRecords[lastRecordsIdx];
-        lastRecord.timeOut = convertedTimeAll;
+        const lastRecord = attendance.attendanceRecords[lastRecordsIdx]; // lastRecordsIdx = 0
+        // lastRecord.timeOut = convertedTimeAll;
+
         //TODO: Write check for scfaStatus from students. If yes, tabulate if more than 4 hrs. if more = "true" else "false"
-        if (studentId.scfaStatus === "active-beneficiary") {
-          console.log(`LastRecord TimeOut : ${lastRecord.timeOut}`);
-          console.log(`LastRecord TimeIn : ${lastRecord.timeIn}`);
-          const hoursDiff =
-            Math.abs(lastRecord.timeOut - lastRecord.timeIn) / (1000 * 60 * 60);
-          lastRecord.requirementsMet = hoursDiff >= 4 ? "true" : "false";
+        console.log(`scfaStatus before update: ${studentId.scfaStatus}`);
+        console.log(
+          `Testing 5 mins data:`,
+          lastRecord.timeOut - lastRecord.timeIn
+        );
+        //TODO Testing 5 min buffer
+        // 12 March 2025
+        // 5 mins = 300000
+        // 9:00 AM = 1741770000000
+        // 9:03 AM = 1741770180000
+        // 9:04 AM = 1741770240000
+        // 9:05 AM = 1741791900000
+        // 9:06 AM = 1741791960000
+        // 3:00 PM = 1741791600000
+        const minDiff = Math.abs(lastRecord.timeOut - lastRecord.timeIn);
+        console.log(`Mins Diff: ${minDiff}`);
+        //   > 300000
+        if (minDiff > 300000) {
+          lastRecord.timeOut = convertedTimeAll;
+          if (studentId.scfaStatus === "active-beneficiary") {
+            console.log(`LastRecord TimeOut : ${lastRecord.timeOut}`);
+            console.log(`LastRecord TimeIn : ${lastRecord.timeIn}`);
+            const hoursDiff =
+              Math.abs(lastRecord.timeOut - lastRecord.timeIn) /
+              (1000 * 60 * 60);
+            lastRecord.requirementsMet = hoursDiff >= 4 ? "true" : "false";
+          }
+          await attendance.save();
         }
       }
-      await attendance.save();
+
+      // await attendance.save();
     }
-    res.json(attendance);
+
+    const populateAttendance = await Attendance.findById(
+      attendance._id
+    ).populate({
+      path: "attendanceName",
+      model: "Student",
+      select: "studentName studentIc dateOfBirth scfaStatus",
+    });
+    // res.json(attendance);
+    res.json(populateAttendance);
   } catch (err) {
     return res.status(500).json({ err: err.message });
   }
 });
 
 module.exports = router;
+
 // testing old data ObjectID: attendanceName: 67cc53f896b207298ef1ecca from attendance collection
 // testing new data ObjectId: attendanceName: 67ce5322298c820947bc3724 insert into attendance collection
 
