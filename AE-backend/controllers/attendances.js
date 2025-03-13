@@ -154,28 +154,17 @@ router.post("/scanToday", verifyToken, async (req, res) => {
         await attendance.save();
       } else {
         const lastRecord = attendance.attendanceRecords[lastRecordsIdx]; // lastRecordsIdx = 0
-        // lastRecord.timeOut = convertedTimeAll;
 
-        //TODO: Write check for scfaStatus from students. If yes, tabulate if more than 4 hrs. if more = "true" else "false"
-        console.log(`scfaStatus before update: ${studentId.scfaStatus}`);
-        console.log(
-          `Testing 5 mins data:`,
-          lastRecord.timeOut - lastRecord.timeIn
-        );
-        //TODO Testing 5 min buffer
-        // 12 March 2025
-        // 5 mins = 300000
-        // 9:00 AM = 1741770000000
-        // 9:03 AM = 1741770180000
-        // 9:04 AM = 1741770240000
-        // 9:05 AM = 1741791900000
-        // 9:06 AM = 1741791960000
-        // 3:00 PM = 1741791600000
-        const minDiff = Math.abs(lastRecord.timeOut - lastRecord.timeIn);
-        console.log(`Mins Diff: ${minDiff}`);
-        //   > 300000
-        if (minDiff > 300000) {
+        // Check if scan is at least 5 minutes after the last timeOut
+        const timeDiff = Math.abs(convertedTimeAll - lastRecord.timeOut); //old (lastRecord.timeIn - lastRecord.timeOut)
+
+        console.log(`Time since last scan: ${timeDiff / 60000} minutes`);
+
+        // Only update if more than 5 minutes have passed
+        if (timeDiff > 300000) {
+          // 5 minutes aka 300000 milliseconds
           lastRecord.timeOut = convertedTimeAll;
+
           if (studentId.scfaStatus === "active-beneficiary") {
             console.log(`LastRecord TimeOut : ${lastRecord.timeOut}`);
             console.log(`LastRecord TimeIn : ${lastRecord.timeIn}`);
@@ -185,12 +174,22 @@ router.post("/scanToday", verifyToken, async (req, res) => {
             lastRecord.requirementsMet = hoursDiff >= 4 ? "true" : "false";
           }
           await attendance.save();
+        } else {
+          console.log(`Ignoring scan - less than 5 minutes since last scan`);
+          // Don't create a new record, just return an appropriate response
+          return res.status(200).json({
+            message: "Scan ignored - less than 5 minutes since last scan",
+            attendance: await Attendance.findById(attendance._id).populate({
+              path: "attendanceName",
+              model: "Student",
+              select: "studentName studentIc dateOfBirth scfaStatus",
+            }),
+          });
         }
       }
-
-      // await attendance.save();
     }
 
+    // Only reach this point if we didn't return early due to 5-minute buffer
     const populateAttendance = await Attendance.findById(
       attendance._id
     ).populate({
