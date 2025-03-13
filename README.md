@@ -51,7 +51,29 @@ Consultation:
 4. Setup base attendence in queries for the base students.(done)
 5. Test attendanceRecords with queires. Manual insert data (done)
 
-11/03/2025 6. Test attendanceRecords via Express: verify the method that is used for attendance.
-first post checks if there are records. if non, create timeIn. (done)
-second post checks if there are records, if yes, edit- udpate Records array (still figuring out)
-n post checks if there are records, if yes, update timeOut. 7. Ensure Bruno is able to do all of the above without Queries.js 8. Init Frontend.
+11/03/2025
+
+6. Test attendanceRecords via Express: verify the method that is used for attendance.
+   first post checks if there are records. if non, create timeIn. (done)
+   second post checks if there are records, if yes, edit- udpate Records array (done)
+
+12/3/2025
+
+Backend:
+
+1. Add buffer of 5 mins. Initial scans. (done)
+2. requirementsMet not done yet (done)
+
+13/3/2025
+Frontend:
+
+1. Init Frontend
+2. Check Charts.js
+3. Setup up service for list all items. Get it talking to backend.
+4. Get base structure working with the different components.
+
+- NavBar
+- Login/Authenticate
+- Student List All
+- List Targets
+-
