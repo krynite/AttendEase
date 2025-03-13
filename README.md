@@ -72,8 +72,8 @@ Frontend:
 3. Setup up service for list all items. Get it talking to backend.
 4. Get base structure working with the different components.
 
-- NavBar
-- Login/Authenticate
+- NavBar (partial)
+- Login/Authenticate (signup done)
 - Student List All
 - List Targets
 -

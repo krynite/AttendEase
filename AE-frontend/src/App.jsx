@@ -6,32 +6,32 @@ import './App.css'
 import { UserContext } from "./contexts/UserContext";
 // Component Imports
 import NavBar from './components/NavBar/NavBar'
-// import SignInForm from "./components/SignInForm/SignInForm"
+import SignInForm from "./components/SignInForm/SignInForm"
 import SignUpForm from "./components/SignUpForm/SignUpForm";
 
 const App = () => {
   const { user } = useContext(UserContext);
   const [users, setUsers] = useState([]);
 
-  useEffect(() => {
-    const fetchValues = async () => {
-      try {
-        if (user) {
-          const fetchedValues = await valuesService.show(user._id);
+  // useEffect(() => {
+  //   const fetchValues = async () => {
+  //     try {
+  //       if (user) {
+  //         const fetchedValues = await valuesService.show(user._id);
 
-          if (!fetchedValues) {
-            console.log("No values returned");  // Debug log
-            return;
-          }
-          setValuesResults(fetchedValues);
-        }
-      } catch (err) {
-        console.log("Error fetching values:", err);
-      }
-    };
+  //         if (!fetchedValues) {
+  //           console.log("No values returned");  // Debug log
+  //           return;
+  //         }
+  //         setValuesResults(fetchedValues);
+  //       }
+  //     } catch (err) {
+  //       console.log("Error fetching values:", err);
+  //     }
+  //   };
 
-    fetchValues();
-  }, [user]);
+  //   fetchValues();
+  // }, [user]);
 
 
 
@@ -45,7 +45,7 @@ const App = () => {
         <h1>Link Header here</h1>
         <p>Display different components here. </p>
         <Routes>
-          {/* <Route path="/sign-in" element={<SignInForm} /> */}
+          <Route path="/sign-in" element={<SignInForm />} />
           <Route path="/sign-up" element={<SignUpForm />} />
 
 
