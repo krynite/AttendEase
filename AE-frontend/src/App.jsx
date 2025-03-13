@@ -1,34 +1,58 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useContext, useEffect, useState } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
+// import reactLogo from './assets/react.svg'
+// import viteLogo from '/vite.svg'
 import './App.css'
+import { UserContext } from "./contexts/UserContext";
+// Component Imports
+import NavBar from './components/NavBar/NavBar'
+// import SignInForm from "./components/SignInForm/SignInForm"
+import SignUpForm from "./components/SignUpForm/SignUpForm";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const { user } = useContext(UserContext);
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const fetchValues = async () => {
+      try {
+        if (user) {
+          const fetchedValues = await valuesService.show(user._id);
+
+          if (!fetchedValues) {
+            console.log("No values returned");  // Debug log
+            return;
+          }
+          setValuesResults(fetchedValues);
+        }
+      } catch (err) {
+        console.log("Error fetching values:", err);
+      }
+    };
+
+    fetchValues();
+  }, [user]);
+
+
+
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+
+    <div className="app-container">
+      <NavBar />
+
+      <main className="main-content">
+        <h1>Link Header here</h1>
+        <p>Display different components here. </p>
+        <Routes>
+          {/* <Route path="/sign-in" element={<SignInForm} /> */}
+          <Route path="/sign-up" element={<SignUpForm />} />
+
+
+        </Routes>
+      </main>
+    </div>
+
   )
 }
 
