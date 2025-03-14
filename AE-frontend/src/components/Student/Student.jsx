@@ -28,21 +28,6 @@ const Student = () => {
         <>
             <div>
                 <StudentGrid students={students} />
-                <h1>-----------------------</h1>
-                {/* <h1>STUDENTS</h1> */}
-                {/* {students.map((student) => (
-                    <ul key={student._id}>
-                        <li>{student.studentName}</li>
-                        <li>{student.enrollStatus}</li>
-                        <li>{student.role}</li>
-                        <li>
-                            <Link to={`/students/${student._id}`}>View</Link>
-                        </li>
-                    </ul>)
-                )} */}
-
-
-
             </div>
         </>
     )

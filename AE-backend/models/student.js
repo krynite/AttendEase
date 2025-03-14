@@ -64,4 +64,11 @@ const studentsSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+studentsSchema.virtual("studentAge").get(function () {
+  const today = new Date();
+  const studentDob = this.dateOfBirth;
+  const age = today.getFullYear() - studentDob.getFullYear();
+  return age;
+});
+
 module.exports = model("Student", studentsSchema);
