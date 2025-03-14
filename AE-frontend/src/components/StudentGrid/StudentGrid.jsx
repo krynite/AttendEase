@@ -25,7 +25,19 @@ const StudentGrid = ({ students }) => {
             { value: 'denied', label: 'Denied' }
         ],
         // Mapping schools as there can me any amount of different schools.
-        schoolName: [...new Set(students.map(student => student.schoolName))]
+        schoolName: [...new Set(students.map(student => student.schoolName))],
+        // Hardcoding the studentLevel
+        studentLevel: [
+            { value: 'P1', label: 'P1' },
+            { value: 'P2', label: 'P2' },
+            { value: 'P3', label: 'P3' },
+            { value: 'P4', label: 'P4' },
+            { value: 'P5', label: 'P5' },
+            { value: 'P6', label: 'P6' },
+            { value: 'Below P1', label: 'Below P1' },
+            { value: 'Above P6', label: 'Above P6' },
+            { value: 'Unknown', label: 'Unknown' }
+        ],
     };
 
     const handleFilterChange = (event) => {
@@ -42,7 +54,8 @@ const StudentGrid = ({ students }) => {
         setFilters({
             enrollStatus: '-',
             scfaStatus: '-',
-            schoolName: '-'
+            schoolName: '-',
+            studentLEvel: '-',
         });
         console.log(`test clearFilter`)
     };
@@ -60,7 +73,8 @@ const StudentGrid = ({ students }) => {
             return (
                 (filters.enrollStatus === '' || student.enrollStatus === filters.enrollStatus) &&
                 (filters.scfaStatus === '' || student.scfaStatus === filters.scfaStatus) &&
-                (filters.schoolName === '' || student.schoolName === filters.schoolName)
+                (filters.schoolName === '' || student.schoolName === filters.schoolName) &&
+                (filters.studentLevel === '' || student.studentLevel === filters.studentLevel)
             );
         });
     }, [students, filters]);
@@ -79,14 +93,16 @@ const StudentGrid = ({ students }) => {
             setFilters({
                 enrollStatus: '',
                 scfaStatus: '',
-                schoolName: ''
+                schoolName: '',
+                studentLevel: '',
             });
         }
         if (event.target.value === "AllScfa") {
             setFilters({
                 enrollStatus: '',
                 scfaStatus: 'active-beneficiary',
-                schoolName: ''
+                schoolName: '',
+                studentLevel: '',
             });
         }
         console.log(`test handleQuickFilter `)
@@ -161,6 +177,26 @@ const StudentGrid = ({ students }) => {
                             {filterOptions.schoolName.map((school) => (
                                 <option key={school} value={school}>
                                     {school}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="filter-field">
+                        <label htmlFor="student-level">
+                            Student Level
+                        </label>
+                        <select
+                            id="student-level"
+                            name="studentLevel"
+                            value={filters.studentLevel}
+                            onChange={handleFilterChange}
+                        >
+                            <option value="-">-</option>
+                            <option value="">All</option>
+                            {filterOptions.studentLevel.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
                                 </option>
                             ))}
                         </select>
