@@ -1,0 +1,17 @@
+meta {
+  name: ini School Options
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{HOST}}/students/school-options
+  body: none
+  auth: inherit
+}
+
+body:json {
+  {
+    "fullname": "Morgan"
+  }
+}

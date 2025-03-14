@@ -6,28 +6,28 @@ import studentService from "../../services/studentService";
 import StudentGrid from "../StudentGrid/StudentGrid";
 
 const Student = () => {
-    const [students, setStudents] = useState([]);
+    // const [students, setStudents] = useState([]);
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        const fetchStudents = async () => {
-            try {
-                const request = await studentService.getAllStudents();
-                setStudents(request)
-                console.log(request)        // returning: dateOfBirth enrollStatus role scfaStatus schoolName studentName
-            } catch (err) {
-                console.log(`Error fetching Students: ${err.message}`)
-            }
+    //     const fetchStudents = async () => {
+    //         try {
+    //             const request = await studentService.getAllStudents();
+    //             setStudents(request)
+    //             console.log(request)        // returning: dateOfBirth enrollStatus role scfaStatus schoolName studentName
+    //         } catch (err) {
+    //             console.log(`Error fetching Students: ${err.message}`)
+    //         }
 
-        }
-        fetchStudents();
-    }, [])
+    //     }
+    //     fetchStudents();
+    // }, [])
 
 
     return (
         <>
             <div>
-                <StudentGrid students={students} />
+                <StudentGrid />
             </div>
         </>
     )

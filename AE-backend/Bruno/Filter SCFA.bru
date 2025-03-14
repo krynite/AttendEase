@@ -1,0 +1,17 @@
+meta {
+  name: Filter SCFA
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{HOST}}/students/filter
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "scfaStatus": "active-beneficiary"
+  }
+}

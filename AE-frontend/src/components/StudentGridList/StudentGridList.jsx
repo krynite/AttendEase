@@ -25,12 +25,15 @@ const StudentGridList = ({ filteredStudents, getLabelForValue }) => {
                         <td>
                             {student.schoolName}
                         </td>
-                        <td className="actions-column">
+                        <td>
+                            {student.studentLevel}
+                        </td>
+                        <td className="moreDetails">
                             <Link
                                 to={`/students/${student._id}`}
-                                className="view-button"
+                                className="moreDetails"
                             >
-                                View
+                                More Details
                             </Link>
                         </td>
                     </tr>

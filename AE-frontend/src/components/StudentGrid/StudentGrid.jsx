@@ -1,16 +1,76 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from "react-router-dom";
 // import './StudentGrid.css';
 import StudentGridList from '../StudentGridList/StudentGridList';
+import studentService from "../../services/studentService";
 
-const StudentGrid = ({ students }) => {
-
-    // filtering states
+const StudentGrid = () => {
+    const [filteredStudents, setFilteredStudents] = useState([]);
+    const [totalStudentCount, setTotalStudentCount] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [schoolOptions, setSchoolOptions] = useState([]);
+    const [error, setError] = useState(null);
+    const [hasAppliedFilters, setHasAppliedFilters] = useState(false);
     const [filters, setFilters] = useState({
         enrollStatus: '-',
         scfaStatus: '-',
-        schoolName: '-'
+        schoolName: '-',
+        studentLevel: '-'
     });
+
+    // get table options
+    useEffect(() => {
+        const fetchSchoolOptions = async () => {
+            try {
+                const response = await studentService.getSchoolOptions();
+                setSchoolOptions(response.schools);
+                setTotalStudentCount(response.totalCount);
+            } catch (err) {
+                console.log(`Error fetching school options: ${err.message}`);
+                setSchoolOptions([]);
+            }
+        };
+
+        fetchSchoolOptions();
+    }, []);
+
+    useEffect(() => {
+        // check if any filter is applied // should not need
+        const isAnyFilterApplied =
+            filters.enrollStatus !== '-' ||
+            filters.scfaStatus !== '-' ||
+            filters.schoolName !== '-' ||
+            filters.studentLevel !== '-';
+
+        // Update flag for showing empty state message
+        setHasAppliedFilters(isAnyFilterApplied);
+
+        if (!isAnyFilterApplied) {
+            setFilteredStudents([]);
+            return;
+        }
+
+        const fetchFilteredStudents = async () => {
+            try {
+                setLoading(true);
+                const data = await studentService.getFilteredStudents(filters);
+                setFilteredStudents(data);
+                // Update total count if this is first filter application
+                if (totalStudentCount === 0 && data.length > 0) {
+                    setTotalStudentCount(data.length);
+                }
+                setLoading(false);
+            } catch (err) {
+                console.log(`Error fetching filtered students: ${err.message}`);
+                setError(err.message);
+                setLoading(false);
+            }
+        };
+
+        fetchFilteredStudents();
+    }, [filters]);
+
+
     // fixed filterOptions. Should not be changeD!!!
     const filterOptions = {
         enrollStatus: [
@@ -25,7 +85,7 @@ const StudentGrid = ({ students }) => {
             { value: 'denied', label: 'Denied' }
         ],
         // Mapping schools as there can me any amount of different schools.
-        schoolName: [...new Set(students.map(student => student.schoolName))],
+        schoolName: schoolOptions,
         // Hardcoding the studentLevel
         studentLevel: [
             { value: 'P1', label: 'P1' },
@@ -55,29 +115,29 @@ const StudentGrid = ({ students }) => {
             enrollStatus: '-',
             scfaStatus: '-',
             schoolName: '-',
-            studentLEvel: '-',
+            studentLevel: '-',
         });
         console.log(`test clearFilter`)
     };
 
-    // filters student data
-    const filteredStudents = useMemo(() => {
-        return students.filter(student => {
+    // // filters student data
+    // const filteredStudents = useMemo(() => {
+    //     return students.filter(student => {
 
-            // added default show nothing //? Not working as intended.
-            // if (filters.enrollStatus === '-' && filters.scfaStatus === '-' && filters.schoolName === '-') {
-            //     return [];
-            // }
-            //testing filters
-            console.log(`---------------- StudentenrollStatus: ${student.enrollStatus}`)
-            return (
-                (filters.enrollStatus === '' || student.enrollStatus === filters.enrollStatus) &&
-                (filters.scfaStatus === '' || student.scfaStatus === filters.scfaStatus) &&
-                (filters.schoolName === '' || student.schoolName === filters.schoolName) &&
-                (filters.studentLevel === '' || student.studentLevel === filters.studentLevel)
-            );
-        });
-    }, [students, filters]);
+    //         // added default show nothing //? Not working as intended.
+    //         // if (filters.enrollStatus === '-' && filters.scfaStatus === '-' && filters.schoolName === '-') {
+    //         //     return [];
+    //         // }
+    //         //testing filters
+    //         console.log(`---------------- StudentenrollStatus: ${student.enrollStatus}`)
+    //         return (
+    //             (filters.enrollStatus === '' || student.enrollStatus === filters.enrollStatus) &&
+    //             (filters.scfaStatus === '' || student.scfaStatus === filters.scfaStatus) &&
+    //             (filters.schoolName === '' || student.schoolName === filters.schoolName) &&
+    //             (filters.studentLevel === '' || student.studentLevel === filters.studentLevel)
+    //         );
+    //     });
+    // }, [students, filters]);
 
     // Get label for a given value from options
     const getLabelForValue = (category, value) => {
@@ -113,7 +173,7 @@ const StudentGrid = ({ students }) => {
         <div className="student-grid-container">
             <h1>Students</h1>
 
-            {/* Filter div */}
+            {/* filter div segment */}
             <div className="filter-section">
                 <div className="filter-header">
                     <h3>Filter Students</h3>
@@ -182,6 +242,7 @@ const StudentGrid = ({ students }) => {
                         </select>
                     </div>
 
+                    {/* Student Level Filter */}
                     <div className="filter-field">
                         <label htmlFor="student-level">
                             Student Level
@@ -212,26 +273,53 @@ const StudentGrid = ({ students }) => {
                     </div>
                 </div>
             </div>
+            {/* END OF filter div segment */}
 
-            {/* Results count */}
-            <div className="results-count">
-                Showing {filteredStudents.length} of {students.length} students
-            </div>
+            {/* Merged with bottom msg. */}
+            {/* <div className="results-count">
+                {loading ? (
+                    <span>Loading students...</span>
+                ) : error ? (
+                    <span className="error">Error: {error}</span>
+                ) : hasAppliedFilters ? (
+                    <span>Showing {filteredStudents.length} students</span>
+                ) : (
+                    <span>Please apply filters to view students</span>
+                )}
+            </div> */}
 
             {/* Table */}
             <div className="students-table-container">
-                <table className="students-table">
-                    <thead>
-                        <tr>
-                            <th>Student Name</th>
-                            <th>Enrollment Status</th>
-                            <th>SCFA Status</th>
-                            <th>School</th>
-                            <th className="actions-column">Actions</th>
-                        </tr>
-                    </thead>
-                    <StudentGridList filteredStudents={filteredStudents} getLabelForValue={getLabelForValue} />
-                </table>
+                {hasAppliedFilters || loading ? (
+                    <table className="students-table">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Enrollment Status</th>
+                                <th>SCFA Status</th>
+                                <th>School</th>
+                                <th>Level</th>
+                                <th className="actions-column">Actions</th>
+                            </tr>
+                        </thead>
+                        <StudentGridList
+                            filteredStudents={filteredStudents}
+                            getLabelForValue={getLabelForValue}
+                        />
+                    </table>
+                ) : error ? (
+                    <p> Error: {error} </p>
+                ) : hasAppliedFilters ? (
+                    <span>Showing {filteredStudents.length} students</span>
+                ) :
+                    hasAppliedFilters ? (
+                        <span>Showing {filteredStudents.length} students</span>
+                    ) :
+                        (
+                            <div className="empty-state">
+                                <p>Select at least one filter to view students</p>
+                            </div>
+                        )}
             </div>
         </div>
     );

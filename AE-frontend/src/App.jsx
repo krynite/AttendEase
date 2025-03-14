@@ -1,7 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
 import './App.css'
 import { UserContext } from "./contexts/UserContext";
 // Component Imports
@@ -12,31 +10,6 @@ import Student from "./components/Student/Student"
 
 
 const App = () => {
-  const { user } = useContext(UserContext);
-  const [users, setUsers] = useState([]);
-
-  // useEffect(() => {
-  //   const fetchValues = async () => {
-  //     try {
-  //       if (user) {
-  //         const fetchedValues = await valuesService.show(user._id);
-
-  //         if (!fetchedValues) {
-  //           console.log("No values returned");  // Debug log
-  //           return;
-  //         }
-  //         setValuesResults(fetchedValues);
-  //       }
-  //     } catch (err) {
-  //       console.log("Error fetching values:", err);
-  //     }
-  //   };
-
-  //   fetchValues();
-  // }, [user]);
-
-
-
 
   return (
 
