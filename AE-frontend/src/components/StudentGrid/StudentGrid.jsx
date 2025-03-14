@@ -7,9 +7,9 @@ const StudentGrid = ({ students }) => {
 
     // filtering states
     const [filters, setFilters] = useState({
-        enrollStatus: '',
-        scfaStatus: '',
-        schoolName: ''
+        enrollStatus: '-',
+        scfaStatus: '-',
+        schoolName: '-'
     });
     // fixed filterOptions. Should not be changeD!!!
     const filterOptions = {
@@ -40,9 +40,9 @@ const StudentGrid = ({ students }) => {
     // reset filters
     const clearFilters = () => {
         setFilters({
-            enrollStatus: '',
-            scfaStatus: '',
-            schoolName: ''
+            enrollStatus: '-',
+            scfaStatus: '-',
+            schoolName: '-'
         });
         console.log(`test clearFilter`)
     };
@@ -50,6 +50,13 @@ const StudentGrid = ({ students }) => {
     // filters student data
     const filteredStudents = useMemo(() => {
         return students.filter(student => {
+
+            // added default show nothing //? Not working as intended.
+            // if (filters.enrollStatus === '-' && filters.scfaStatus === '-' && filters.schoolName === '-') {
+            //     return [];
+            // }
+            //testing filters
+            console.log(`---------------- StudentenrollStatus: ${student.enrollStatus}`)
             return (
                 (filters.enrollStatus === '' || student.enrollStatus === filters.enrollStatus) &&
                 (filters.scfaStatus === '' || student.scfaStatus === filters.scfaStatus) &&
@@ -67,6 +74,25 @@ const StudentGrid = ({ students }) => {
         return option ? option.label : value;
     };
 
+    const handleQuickFilter = (event) => {
+        if (event.target.value === "AllStudent") {
+            setFilters({
+                enrollStatus: '',
+                scfaStatus: '',
+                schoolName: ''
+            });
+        }
+        if (event.target.value === "AllScfa") {
+            setFilters({
+                enrollStatus: '',
+                scfaStatus: 'active-beneficiary',
+                schoolName: ''
+            });
+        }
+        console.log(`test handleQuickFilter `)
+
+    }
+
     return (
         <div className="student-grid-container">
             <h1>Students</h1>
@@ -75,6 +101,8 @@ const StudentGrid = ({ students }) => {
             <div className="filter-section">
                 <div className="filter-header">
                     <h3>Filter Students</h3>
+                    <button onClick={handleQuickFilter} value="AllStudent"> All Students </button>
+                    <button onClick={handleQuickFilter} value="AllScfa"> All SCFA </button>
                 </div>
 
                 <div className="filter-controls">
@@ -88,6 +116,7 @@ const StudentGrid = ({ students }) => {
                             value={filters.enrollStatus}
                             onChange={handleFilterChange}
                         >
+                            <option value="-">-</option>
                             <option value="">All</option>
                             {filterOptions.enrollStatus.map((option) => (
                                 <option key={option.value} value={option.value}>
@@ -107,6 +136,7 @@ const StudentGrid = ({ students }) => {
                             value={filters.scfaStatus}
                             onChange={handleFilterChange}
                         >
+                            <option value="-">-</option>
                             <option value="">All</option>
                             {filterOptions.scfaStatus.map((option) => (
                                 <option key={option.value} value={option.value}>
@@ -126,6 +156,7 @@ const StudentGrid = ({ students }) => {
                             value={filters.schoolName}
                             onChange={handleFilterChange}
                         >
+                            <option value="-">-</option>
                             <option value="">All</option>
                             {filterOptions.schoolName.map((school) => (
                                 <option key={school} value={school}>

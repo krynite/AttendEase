@@ -61,7 +61,7 @@ const studentsSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 studentsSchema.virtual("studentAge").get(function () {
