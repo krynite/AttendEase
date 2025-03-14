@@ -7,7 +7,10 @@ const verifyToken = require("../middleware/verify-token");
 router.get("/", verifyToken, async (req, res) => {
   try {
     // const students = await Student.find({}, "studentName");
-    const students = await Student.find({}, "studentName enrollStatus role"); // testing seaching other stuff.
+    const students = await Student.find(
+      {},
+      "studentName enrollStatus scfaStatus role schoolName dateOfBirth gender"
+    ); // testing seaching other stuff.
 
     res.json(students);
   } catch (err) {
