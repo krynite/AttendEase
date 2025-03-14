@@ -28,6 +28,7 @@ const SignInForm = () => {
         try {
             const signedInUser = await signIn(formData);
             setUser(signedInUser)
+            // console.log(signedInUser)
             navigate('/')
         } catch (err) {
             setMessage(err.message)
@@ -39,6 +40,7 @@ const SignInForm = () => {
     return (
         <>
             <h1>Sign In Form</h1>
+            <p>{message}</p>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor='username'>Username:</label> <br />
