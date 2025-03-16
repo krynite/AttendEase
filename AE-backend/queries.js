@@ -52,7 +52,7 @@ const createDefaultStudents = async () => {
       role: "student",
       studentName: "Morgan",
       studentIc: "T1111111H",
-      dateOfBirth: 1356998400000, // 1 Jan 2013 P6
+      dateOfBirth: 1331903771000, // 1 Jan 2013 P6
       gender: "male",
       address: "123 Road",
       schoolName: "ASD School",

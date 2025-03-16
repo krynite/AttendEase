@@ -262,6 +262,7 @@ router.post("/filter", verifyToken, async (req, res) => {
 
           // Get student level
           const level = calculateStudentLevel(studentObj.studentAge);
+          console.log(`--------------------student Level: ${level}`);
 
           // Add the calculated level to the record
           record.attendanceName.studentLevel = level;
