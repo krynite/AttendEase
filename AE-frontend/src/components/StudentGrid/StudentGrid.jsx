@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 // import './StudentGrid.css';
 import StudentGridList from '../StudentGridList/StudentGridList';
@@ -47,6 +47,7 @@ const StudentGrid = () => {
 
         if (!isAnyFilterApplied) {
             setFilteredStudents([]);
+            console.log(`Testing isAnyfilterApplied - If this shows up, no past filters.`)
             return;
         }
 

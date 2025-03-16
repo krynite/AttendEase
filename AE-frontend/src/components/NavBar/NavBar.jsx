@@ -8,7 +8,7 @@ function NavBar() {
     return (
         <nav className="vertical-navbar">
             <div className="logo">
-                <h2>Logo here.</h2>
+                <h2>AttendEase</h2>
             </div>
             <ul className="nav-links">
                 <li className="nav-item">
@@ -37,7 +37,8 @@ function NavBar() {
                 </li>
             </ul>
             <div className="nav-footer">
-                <p>AttendEase</p>
+                {/* <p>Sign-In/Sign-Up</p> */}
+                <Link to="/sign-in">Sign-in</Link>
             </div>
         </nav>
     );

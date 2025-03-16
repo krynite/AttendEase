@@ -7,6 +7,8 @@ import NavBar from './components/NavBar/NavBar'
 import SignInForm from "./components/SignInForm/SignInForm"
 import SignUpForm from "./components/SignUpForm/SignUpForm";
 import Student from "./components/Student/Student"
+import StudentDetails from "./components/StudentDetail/StudentDetail";
+import Attendance from "./components/Attendance/Attendance"
 
 
 const App = () => {
@@ -24,6 +26,8 @@ const App = () => {
           <Route path="/sign-in" element={<SignInForm />} />
           <Route path="/sign-up" element={<SignUpForm />} />
           <Route path="/students" element={<Student />} />
+          <Route path="/students/:id" element={<StudentDetails />} />
+          <Route path="/attendance" element={<Attendance />} />
 
 
         </Routes>

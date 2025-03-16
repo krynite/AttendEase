@@ -65,6 +65,11 @@ const studentsSchema = new mongoose.Schema(
 );
 
 studentsSchema.virtual("studentAge").get(function () {
+  if (!this.dateOfBirth) {
+    // Need this, else  error when fetching data.
+    return null;
+  }
+
   const today = new Date();
   const studentDob = this.dateOfBirth;
   const age = today.getFullYear() - studentDob.getFullYear();

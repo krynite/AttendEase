@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { signIn } from "../../services/authService"
 import { UserContext } from "../../contexts/UserContext"
 
@@ -36,6 +36,9 @@ const SignInForm = () => {
 
     }
 
+    const signUpButton = () => {
+        navigate('/sign-up')
+    }
 
     return (
         <>
@@ -52,7 +55,9 @@ const SignInForm = () => {
                 </div>
 
                 <button type='submit' disabled={isFormInvalid()}>Login</button>
-            </form>
+                <button onClick={signUpButton}> Create New User</button>
+                {/* <Link to={`/sign-up`}>Click here to Sign Up</Link> */}
+            </form >
         </>
     )
 }

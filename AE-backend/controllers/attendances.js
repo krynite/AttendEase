@@ -9,6 +9,15 @@ const student = require("../models/student");
 
 // HTML codes: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
 
+const calculateStudentLevel = (age) => {
+  if (!age || typeof age !== "number") return "Unknown";
+  if (age < 7) return "Below P1";
+  if (age > 12) return "Above P6";
+
+  // Map ages 7-12 to P1-P6
+  return `P${age - 6}`;
+};
+
 // Show all attendances records.
 router.get("/", verifyToken, async (req, res) => {
   try {
@@ -17,6 +26,7 @@ router.get("/", verifyToken, async (req, res) => {
       .sort({ attendanceDate: -1 });
     res.json(attendance);
   } catch (err) {
+    // console.log(`Error Message: ${err.message}`);
     res.status(500).json({ err: err.message });
   }
 });
@@ -204,28 +214,73 @@ router.post("/scanToday", verifyToken, async (req, res) => {
   }
 });
 
+router.post("/filter", verifyToken, async (req, res) => {
+  try {
+    const { attendanceDate, studentLevel } = req.body;
+
+    // store matched attendance records
+    let matchedAttendances = [];
+
+    // set format of attendanceDate
+    if (attendanceDate) {
+      const startOfDay = new Date(attendanceDate);
+      startOfDay.setHours(0, 0, 0, 0);
+
+      const endOfDay = new Date(attendanceDate);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      matchedAttendances = await Attendance.find({
+        attendanceDate: {
+          $gte: startOfDay,
+          $lte: endOfDay,
+        },
+      });
+    } else {
+      matchedAttendances = await Attendance.find({});
+    }
+
+    // Populate student data for all matched attendance records
+    const populatedRecords = await Attendance.populate(matchedAttendances, {
+      path: "attendanceName",
+      model: "Student",
+      select: "studentName studentIc dateOfBirth scfaStatus gender",
+    });
+
+    // Calculate student level and filter if necessary
+    const resultsWithLevel = [];
+
+    for (let i = 0; i < populatedRecords.length; i++) {
+      const record = populatedRecords[i];
+
+      if (record.attendanceName) {
+        // Fetch the complete student document to access virtual properties
+        const student = await Student.findById(record.attendanceName._id);
+
+        if (student) {
+          // Convert to object to include virtuals
+          const studentObj = student.toObject();
+
+          // Get student level
+          const level = calculateStudentLevel(studentObj.studentAge);
+
+          // Add the calculated level to the record
+          record.attendanceName.studentLevel = level;
+
+          // If studentLevel filter is specified, only include records with matching level
+          if (!studentLevel || level === studentLevel) {
+            resultsWithLevel.push(record);
+          }
+        }
+      }
+    }
+
+    res.json(resultsWithLevel);
+  } catch (err) {
+    console.error("Filter error:", err);
+    res.status(500).json({ err: err.message });
+  }
+});
 module.exports = router;
 
 // testing old data ObjectID: attendanceName: 67cc53f896b207298ef1ecca from attendance collection
 // testing new data ObjectId: attendanceName: 67ce5322298c820947bc3724 insert into attendance collection
-
-// Code for recording arrays with multiple entries. //! Cant decide which idea. Doing both. Bottom old code untested.
-// if (!attendance) {
-//       //if nth than create. else update
-//       //create
-//       attendance = await Attendance.create({
-//         attendanceName: id,
-//         attendanceDate: today,
-//         attendanceRecords: [
-//           {
-//             timeIn: timeAll,
-//             timeOut: timeAll, //TODO: Think if wanna cheat and change require status to false. Hahaha
-//             requirementsMet: "NA",
-//           },
-//         ],
-//       });
-//     } else {
-//       //TODO: Write track last Idx and create record with the new Idx
-//       const lastRecordsIdx = attendance.attendanceDate.length - 1;
-//       if(lastRecordsIdx !== 0)
-//     }

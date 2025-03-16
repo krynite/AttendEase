@@ -94,20 +94,42 @@ router.get("/school-options", verifyToken, async (req, res) => {
   }
 });
 
-router.get("/:userId", verifyToken, async (req, res) => {
-  //test init login
+// router.get("/:userId", verifyToken, async (req, res) => {
+//   //test init login
+//   try {
+//     if (req.user._id !== req.params.userId) {
+//       return res.status(403).json({ err: "Unauthorized" });
+//     }
+
+//     const user = await User.findById(req.params.userId);
+
+//     if (!user) {
+//       return res.status(404).json({ err: "User not found." });
+//     }
+
+//     res.json({ user });
+//   } catch (err) {
+//     res.status(500).json({ err: err.message });
+//   }
+// });
+
+router.get("/:studentId", verifyToken, async (req, res) => {
   try {
-    if (req.user._id !== req.params.userId) {
-      return res.status(403).json({ err: "Unauthorized" });
+    const studentId = req.params.studentId;
+
+    const student = await Student.findById(studentId);
+
+    if (!student) {
+      return res.status(404).json({ err: "Student not found." });
     }
 
-    const user = await User.findById(req.params.userId);
+    // Convert to object to include virtuals
+    const studentObj = student.toObject();
 
-    if (!user) {
-      return res.status(404).json({ err: "User not found." });
-    }
+    // Add calculated student level
+    studentObj.studentLevel = calculateStudentLevel(student.studentAge);
 
-    res.json({ user });
+    res.json(studentObj);
   } catch (err) {
     res.status(500).json({ err: err.message });
   }
