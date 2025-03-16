@@ -9,6 +9,9 @@ import SignUpForm from "./components/SignUpForm/SignUpForm";
 import Student from "./components/Student/Student"
 import StudentDetails from "./components/StudentDetail/StudentDetail";
 import Attendance from "./components/Attendance/Attendance"
+import ScanAttendance from "./components/ScanAttendance/ScanAttendance";
+import Dashboard from "./components/Dashboard/Dashboard";
+
 
 
 const App = () => {
@@ -28,6 +31,8 @@ const App = () => {
           <Route path="/students" element={<Student />} />
           <Route path="/students/:id" element={<StudentDetails />} />
           <Route path="/attendance" element={<Attendance />} />
+          <Route path="/scanToday" element={<ScanAttendance />} />
+          <Route path="/dashboard" element={<Dashboard />} />
 
 
         </Routes>

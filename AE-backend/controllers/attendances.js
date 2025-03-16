@@ -15,7 +15,7 @@ const calculateStudentLevel = (age) => {
   if (age > 12) return "Above P6";
 
   // Map ages 7-12 to P1-P6
-  return `P${age - 6}`;
+  return `P${age - 7}`;
 };
 
 // Show all attendances records.
@@ -214,60 +214,122 @@ router.post("/scanToday", verifyToken, async (req, res) => {
   }
 });
 
+// router.post("/filter", verifyToken, async (req, res) => {
+//   try {
+//     const { attendanceDate, studentLevel } = req.body;
+
+//     // store matched attendance records
+//     let matchedAttendances = [];
+
+//     // set format of attendanceDate
+//     if (attendanceDate) {
+//       const startOfDay = new Date(attendanceDate);
+//       startOfDay.setHours(0, 0, 0, 0);
+
+//       const endOfDay = new Date(attendanceDate);
+//       endOfDay.setHours(23, 59, 59, 999);
+
+//       matchedAttendances = await Attendance.find({
+//         attendanceDate: {
+//           $gte: startOfDay,
+//           $lte: endOfDay,
+//         },
+//       });
+//     } else {
+//       matchedAttendances = await Attendance.find({});
+//     }
+
+//     // Populate student data for all matched attendance records
+//     const populatedRecords = await Attendance.populate(matchedAttendances, {
+//       path: "attendanceName",
+//       model: "Student",
+//       select: "studentName studentIc dateOfBirth scfaStatus gender",
+//     });
+
+//     // Calculate student level and filter if necessary
+//     const resultsWithLevel = [];
+
+//     for (let i = 0; i < populatedRecords.length; i++) {
+//       const record = populatedRecords[i];
+
+//       if (record.attendanceName) {
+//         // Fetch the complete student document to access virtual properties
+//         const student = await Student.findById(record.attendanceName._id);
+
+//         if (student) {
+//           // Convert to object to include virtuals
+//           const studentObj = student.toObject();
+
+//           // Get student level
+//           const level = calculateStudentLevel(studentObj.studentAge);
+//           console.log(`--------------------student Level: ${level}`);
+
+//           // Add the calculated level to the record
+//           record.attendanceName.studentLevel = level;
+
+//           // If studentLevel filter is specified, only include records with matching level
+//           if (!studentLevel || level === studentLevel) {
+//             resultsWithLevel.push(record);
+//           }
+//         }
+//       }
+//     }
+
+//     res.json(resultsWithLevel);
+//   } catch (err) {
+//     console.error("Filter error:", err);
+//     res.status(500).json({ err: err.message });
+//   }
+// });
+
 router.post("/filter", verifyToken, async (req, res) => {
   try {
-    const { attendanceDate, studentLevel } = req.body;
-
-    // store matched attendance records
+    const { attendanceDate, dateRangeEnd, studentLevel } = req.body;
     let matchedAttendances = [];
 
-    // set format of attendanceDate
     if (attendanceDate) {
-      const startOfDay = new Date(attendanceDate);
-      startOfDay.setHours(0, 0, 0, 0);
+      let startDate = new Date(attendanceDate);
+      startDate.setHours(0, 0, 0, 0);
 
-      const endOfDay = new Date(attendanceDate);
-      endOfDay.setHours(23, 59, 59, 999);
+      let endDate;
+      if (dateRangeEnd) {
+        // Date range (week/month)
+        endDate = new Date(dateRangeEnd);
+      } else {
+        // Single day
+        endDate = new Date(attendanceDate);
+      }
+      endDate.setHours(23, 59, 59, 999);
 
       matchedAttendances = await Attendance.find({
         attendanceDate: {
-          $gte: startOfDay,
-          $lte: endOfDay,
+          $gte: startDate,
+          $lte: endDate,
         },
       });
     } else {
       matchedAttendances = await Attendance.find({});
     }
 
-    // Populate student data for all matched attendance records
+    // Populate student data
     const populatedRecords = await Attendance.populate(matchedAttendances, {
       path: "attendanceName",
       model: "Student",
       select: "studentName studentIc dateOfBirth scfaStatus gender",
     });
 
-    // Calculate student level and filter if necessary
+    // Apply student level filter
     const resultsWithLevel = [];
 
-    for (let i = 0; i < populatedRecords.length; i++) {
-      const record = populatedRecords[i];
-
+    for (const record of populatedRecords) {
       if (record.attendanceName) {
-        // Fetch the complete student document to access virtual properties
         const student = await Student.findById(record.attendanceName._id);
 
         if (student) {
-          // Convert to object to include virtuals
           const studentObj = student.toObject();
-
-          // Get student level
           const level = calculateStudentLevel(studentObj.studentAge);
-          console.log(`--------------------student Level: ${level}`);
-
-          // Add the calculated level to the record
           record.attendanceName.studentLevel = level;
 
-          // If studentLevel filter is specified, only include records with matching level
           if (!studentLevel || level === studentLevel) {
             resultsWithLevel.push(record);
           }
@@ -281,6 +343,7 @@ router.post("/filter", verifyToken, async (req, res) => {
     res.status(500).json({ err: err.message });
   }
 });
+
 module.exports = router;
 
 // testing old data ObjectID: attendanceName: 67cc53f896b207298ef1ecca from attendance collection
