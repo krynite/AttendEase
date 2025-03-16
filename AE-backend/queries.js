@@ -43,18 +43,71 @@ const createDefaultUsers = async () => {
 };
 // Used epoch dates: https://www.epochconverter.com/
 const createDefaultStudents = async () => {
-  await Student.deleteMany();
+  // await Student.deleteMany();
   const defaultStudents = await Student.create([
+    // {
+    //   enrollStatus: "active",
+    //   enrollDate: 1735776000000, // 2nd Jan 2025
+    //   scfaStatus: "active-beneficiary",
+    //   role: "student",
+    //   studentName: "Morgan",
+    //   studentIc: "T1111111H",
+    //   dateOfBirth: 1331903771000, // 1 Jan 2013 P6
+    //   gender: "male",
+    //   address: "123 Road",
+    //   schoolName: "ASD School",
+    //   schoolNumber: 66554433,
+    // },
+    // {
+    //   enrollStatus: "active",
+    //   enrollDate: 1735776000000, // 2nd Jan 2025
+    //   scfaStatus: "non-beneficiary",
+    //   role: "student",
+    //   studentName: "Jane",
+    //   studentIc: "T2222222H",
+    //   dateOfBirth: 1262304000000, // 1st Jan 2010 P5
+    //   gender: "female",
+    //   address: "234 Road",
+    //   schoolName: "ASD School",
+    //   schoolNumber: 66554433,
+    // },
+    // {
+    //   enrollStatus: "active",
+    //   enrollDate: 1735776000000, // 2nd Jan 2025
+    //   scfaStatus: "active-beneficiary",
+    //   role: "student",
+    //   studentName: "Steven",
+    //   studentIc: "T3333333H",
+    //   dateOfBirth: 1293840000000, // 1st Jan 2011 P3
+    //   gender: "male",
+    //   address: "345 Road",
+    //   schoolName: "ASD School",
+    //   schoolNumber: 66554433,
+    // },
+    //-------------------------------------------------------------------------------
+    {
+      enrollStatus: "active",
+      enrollDate: 1735776000000, // 2nd Jan 2025
+      scfaStatus: "non-beneficiary",
+      role: "student",
+      studentName: "StudentP6",
+      studentIc: "T4444444H",
+      dateOfBirth: 1357132571000, //  2nd Jan 2013 P6
+      gender: "male",
+      address: "345 Road",
+      schoolName: "ASD School",
+      schoolNumber: 66554433,
+    },
     {
       enrollStatus: "active",
       enrollDate: 1735776000000, // 2nd Jan 2025
       scfaStatus: "active-beneficiary",
       role: "student",
-      studentName: "Morgan",
-      studentIc: "T1111111H",
-      dateOfBirth: 1331903771000, // 1 Jan 2013 P6
+      studentName: "StudentP5",
+      studentIc: "T5555555H",
+      dateOfBirth: 1388668571000, // 2nd Jan 2014 P5
       gender: "male",
-      address: "123 Road",
+      address: "345 Road",
       schoolName: "ASD School",
       schoolNumber: 66554433,
     },
@@ -63,12 +116,12 @@ const createDefaultStudents = async () => {
       enrollDate: 1735776000000, // 2nd Jan 2025
       scfaStatus: "non-beneficiary",
       role: "student",
-      studentName: "Jane",
-      studentIc: "T2222222H",
-      dateOfBirth: 1262304000000, // 1st Jan 2010 P5
-      gender: "female",
-      address: "234 Road",
-      schoolName: "ASD School",
+      studentName: "StudentP4",
+      studentIc: "T66666666H",
+      dateOfBirth: 1420204571000, // 2nd Jan 2015 P4
+      gender: "male",
+      address: "345 Road",
+      schoolName: "CED School",
       schoolNumber: 66554433,
     },
     {
@@ -76,15 +129,16 @@ const createDefaultStudents = async () => {
       enrollDate: 1735776000000, // 2nd Jan 2025
       scfaStatus: "active-beneficiary",
       role: "student",
-      studentName: "Steven",
-      studentIc: "T3333333H",
-      dateOfBirth: 1293840000000, // 1st Jan 2011 P3
+      studentName: "Student P3",
+      studentIc: "T7777777H",
+      dateOfBirth: 1451740571000, // 2nd Jan 2016 P3
       gender: "male",
       address: "345 Road",
-      schoolName: "ASD School",
+      schoolName: "CED School",
       schoolNumber: 66554433,
     },
   ]);
+
   console.log(defaultStudents);
 };
 
@@ -306,10 +360,10 @@ const createTestAttendanceWithoutIds = async () => {
 const runQueries = async () => {
   console.log(`runQueris is running.`);
   // await createDefaultUsers(); // Create Default users.
-  // await createDefaultStudents();
+  await createDefaultStudents();
   // await testInsertAttendance(); //TODO Direct to DB works.
   // await testInsertAttendanceRecords();
-  await createTestAttendanceWithoutIds();
+  // await createTestAttendanceWithoutIds();
 };
 
 connect();
