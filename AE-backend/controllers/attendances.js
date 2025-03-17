@@ -215,136 +215,6 @@ router.post("/scanToday", verifyToken, async (req, res) => {
   }
 });
 
-// router.post("/filter", verifyToken, async (req, res) => {
-//   try {
-//     const { attendanceDate, studentLevel } = req.body;
-
-//     // store matched attendance records
-//     let matchedAttendances = [];
-
-//     // set format of attendanceDate
-//     if (attendanceDate) {
-//       const startOfDay = new Date(attendanceDate);
-//       startOfDay.setHours(0, 0, 0, 0);
-
-//       const endOfDay = new Date(attendanceDate);
-//       endOfDay.setHours(23, 59, 59, 999);
-
-//       matchedAttendances = await Attendance.find({
-//         attendanceDate: {
-//           $gte: startOfDay,
-//           $lte: endOfDay,
-//         },
-//       });
-//     } else {
-//       matchedAttendances = await Attendance.find({});
-//     }
-
-//     // Populate student data for all matched attendance records
-//     const populatedRecords = await Attendance.populate(matchedAttendances, {
-//       path: "attendanceName",
-//       model: "Student",
-//       select: "studentName studentIc dateOfBirth scfaStatus gender",
-//     });
-
-//     // Calculate student level and filter if necessary
-//     const resultsWithLevel = [];
-
-//     for (let i = 0; i < populatedRecords.length; i++) {
-//       const record = populatedRecords[i];
-
-//       if (record.attendanceName) {
-//         // Fetch the complete student document to access virtual properties
-//         const student = await Student.findById(record.attendanceName._id);
-
-//         if (student) {
-//           // Convert to object to include virtuals
-//           const studentObj = student.toObject();
-
-//           // Get student level
-//           const level = calculateStudentLevel(studentObj.studentAge);
-//           console.log(`--------------------student Level: ${level}`);
-
-//           // Add the calculated level to the record
-//           record.attendanceName.studentLevel = level;
-
-//           // If studentLevel filter is specified, only include records with matching level
-//           if (!studentLevel || level === studentLevel) {
-//             resultsWithLevel.push(record);
-//           }
-//         }
-//       }
-//     }
-
-//     res.json(resultsWithLevel);
-//   } catch (err) {
-//     console.error("Filter error:", err);
-//     res.status(500).json({ err: err.message });
-//   }
-// });
-
-// router.post("/filter", verifyToken, async (req, res) => {
-//   try {
-//     const { attendanceDate, dateRangeEnd, studentLevel } = req.body;
-//     let matchedAttendances = [];
-
-//     if (attendanceDate) {
-//       let startDate = new Date(attendanceDate);
-//       startDate.setHours(0, 0, 0, 0);
-
-//       let endDate;
-//       if (dateRangeEnd) {
-//         // Date range (week/month)
-//         endDate = new Date(dateRangeEnd);
-//       } else {
-//         // Single day
-//         endDate = new Date(attendanceDate);
-//       }
-//       endDate.setHours(23, 59, 59, 999);
-
-//       matchedAttendances = await Attendance.find({
-//         attendanceDate: {
-//           $gte: startDate,
-//           $lte: endDate,
-//         },
-//       });
-//     } else {
-//       matchedAttendances = await Attendance.find({});
-//     }
-
-//     // Populate student data
-//     const populatedRecords = await Attendance.populate(matchedAttendances, {
-//       path: "attendanceName",
-//       model: "Student",
-//       select: "studentName studentIc dateOfBirth scfaStatus gender",
-//     });
-
-//     // Apply student level filter
-//     const resultsWithLevel = [];
-
-//     for (const record of populatedRecords) {
-//       if (record.attendanceName) {
-//         const student = await Student.findById(record.attendanceName._id);
-
-//         if (student) {
-//           const studentObj = student.toObject();
-//           const level = calculateStudentLevel(studentObj.studentAge);
-//           record.attendanceName.studentLevel = level;
-
-//           if (!studentLevel || level === studentLevel) {
-//             resultsWithLevel.push(record);
-//           }
-//         }
-//       }
-//     }
-
-//     res.json(resultsWithLevel);
-//   } catch (err) {
-//     console.error("Filter error:", err);
-//     res.status(500).json({ err: err.message });
-//   }
-// });
-
 router.post("/filter", verifyToken, async (req, res) => {
   const {
     studentLevel,
@@ -366,14 +236,15 @@ router.post("/filter", verifyToken, async (req, res) => {
     }).populate({
       path: "attendanceName",
       model: "Student",
-      select: "studentName enrollStatus scfaStatus studentAge studentLevel",
+      select:
+        "studentName enrollStatus scfaStatus studentAge studentLevel dateOfBirth",
       options: { virtual: true },
     });
 
     let filteredRecords = attendanceRecords;
     if (studentLevel) {
       filteredRecords = attendanceRecords.filter(
-        (record) => record.attendanceName.studentLevel
+        (record) => record.attendanceName?.studentLevel === studentLevel
       );
     }
     console.log(`------------------filteredRecords ${filteredRecords}`);
@@ -381,6 +252,44 @@ router.post("/filter", verifyToken, async (req, res) => {
     res.status(200).json(filteredRecords);
   } catch (err) {
     console.log(`------------------Error Message: ${err.message}`);
+    res.status(500).json({ err: err.message });
+  }
+});
+
+router.get("/:id", verifyToken, async (req, res) => {
+  try {
+    const attendance = await Attendance.findById(req.params.id).populate({
+      path: "attendanceName",
+      model: "Student",
+      select:
+        "studentName enrollStatus scfaStatus studentAge studentLevel dateOfBirth",
+    });
+
+    if (!attendance) {
+      return res.status(404).json({ err: "Attendance record not found." });
+    }
+
+    res.json(attendance);
+  } catch (err) {
+    console.error(`Error fetching attendance by ID: ${err.message}`);
+    res.status(500).json({ err: err.message });
+  }
+});
+
+router.delete("/:id", verifyToken, async (req, res) => {
+  try {
+    const attendance = await Attendance.findByIdAndDelete(req.params.id);
+
+    if (!attendance) {
+      return res.status(404).json({ err: "Attendance record not found." });
+    }
+
+    res.json({
+      message: "Attendance record deleted successfully",
+      deletedAttendance: attendance,
+    });
+  } catch (err) {
+    console.error(`Error deleting attendance: ${err.message}`);
     res.status(500).json({ err: err.message });
   }
 });

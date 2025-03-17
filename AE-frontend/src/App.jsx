@@ -13,6 +13,7 @@ import ScanAttendance from "./components/ScanAttendance/ScanAttendance";
 import Dashboard from "./components/Dashboard/Dashboard";
 import StudentUpdate from "./components/StudentUpdate/StudentUpdate"
 import Homepage from "./components/Homepage/Homepage"
+import AttendanceDetail from "./components/AttendanceDetail/AttendanceDetail";
 
 
 
@@ -53,18 +54,7 @@ const App = () => {
 
 
 
-        {/* <Routes>
-          <Route path="/" element={<Homepage />} />
-          <Route path="/sign-in" element={<SignInForm />} />
-          <Route path="/sign-up" element={<SignUpForm />} />
 
-          <Route path="/students" element={<Student />} />
-          <Route path="/students/:id" element={<StudentDetails />} />
-          <Route path="/attendance" element={<Attendance />} />
-          <Route path="/scanToday" element={<ScanAttendance />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/students/update/:id" element={<StudentUpdate />} />
-        </Routes> */}
 
         <Routes>
           {/* Public routes */}
@@ -89,6 +79,9 @@ const App = () => {
             (user?.userRole === "admin" || user?.userRole === "staff") ? <Attendance /> : <Navigate to="/" />
           } />
 
+          <Route path="/attendance/:id" element={
+            (user?.userRole === "admin" || user?.userRole === "staff") ? <AttendanceDetail user={user} /> : <Navigate to="/" />
+          } />
 
           <Route path="/students/update/:id" element={
             user?.userRole === "admin" ? <StudentUpdate user={user} /> : <Navigate to="/dashboard" />

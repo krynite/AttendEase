@@ -34,11 +34,14 @@ attendanceRecordsSchema.virtual("timeDuration").get(function () {
   if (this.timeIn && this.timeOut) {
     return Math.abs(this.timeOut - this.timeIn);
   }
+  return null;
 });
+
+const RecordsModel = model("Records", attendanceRecordsSchema);
 
 // (OPTIONAL) Can write another virtual. If timeIn === timeOut, return "student forgot to sign out".
 
 module.exports = {
   schema: attendanceRecordsSchema,
-  model: model("Records", attendanceRecordsSchema),
+  model: RecordsModel,
 };

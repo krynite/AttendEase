@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import attendanceService from '../../services/attendanceService';
-// import AttendanceFilterDay from '../AttendanceFilterDay/AttendanceFilterDay';
+import AttendanceFilterGrid from '../AttendanceFilterGrid/AttendanceFilterGrid';
 
 
 
@@ -21,7 +21,7 @@ const AttendanceFilter = () => {
         weeklyAttendance: '',
     })
 
-    const [attendanceData, setAttendanceData] = useState([])
+    // const [attendanceData, setAttendanceData] = useState([])
 
     const filterOptions = {
         studentLevel: [
@@ -114,7 +114,7 @@ const AttendanceFilter = () => {
                 // Call the service with the current filters
                 const data = await attendanceService.getFilteredAttendance(filters);
                 console.log(`-----------test fetchFilteredAttendance: ${filters.studentLevel}`)
-                setAttendanceData(data);
+                setFilteredAttendance(data);
             } catch (err) {
                 console.error("Error fetching filtered attendance:", err);
                 // setError(`Failed to fetch attendance data: ${err.message}`);
@@ -155,7 +155,7 @@ const AttendanceFilter = () => {
                 <input type="date" name="weeklyAttendance" value={weeks.weeklyAttendance || ''} onChange={handleWeekChange} />
             </div >
             <div>
-
+                <AttendanceFilterGrid filteredAttendance={filteredAttendance} />
 
             </div>
 

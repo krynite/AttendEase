@@ -48,33 +48,8 @@ const getFilteredAttendance = async (filters) => {
   }
 };
 
-// const getFilteredAttendance = async (filters) => {
-//   try {
-//     // Use POST with request body instead of query params
-//     const response = await fetch(`${BASE_URL}/filter`, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${localStorage.getItem("token")}`,
-//       },
-//       body: JSON.stringify(filters),
-//     });
-
-//     if (!response.ok) {
-//       const errorData = await response.json();
-//       throw new Error(errorData.err || "Failed to fetch filtered attendance");
-//     }
-
-//     const data = await response.json();
-//     return data;
-//   } catch (err) {
-//     throw new Error(`Failed to fetch filtered attendance: ${err.message}`);
-//   }
-// };
-
 const postScanToday = async (formData) => {
   try {
-    // Add retry logic for potentially transient errors
     let retries = 2;
     let response;
 
@@ -89,7 +64,6 @@ const postScanToday = async (formData) => {
           body: JSON.stringify(formData),
         });
 
-        // Break out of retry loop if request was successful
         if (response.ok) break;
 
         // If we get a 4xx client error, don't retry
@@ -113,9 +87,7 @@ const postScanToday = async (formData) => {
       }
     }
 
-    // Handle response
     if (!response.ok) {
-      // Try to parse error details from response
       try {
         const errorData = await response.json();
 
@@ -141,8 +113,53 @@ const postScanToday = async (formData) => {
   }
 };
 
+const getAttendanceById = async (id) => {
+  try {
+    const response = await fetch(`${BASE_URL}/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    if (!response.ok) {
+      console.error(`Error fetching attendance: ${response.status}`);
+      return null;
+    }
+
+    return await response.json();
+  } catch (err) {
+    console.error("Error:", err);
+    return null;
+  }
+};
+
+const deleteAttendance = async (id) => {
+  try {
+    const response = await fetch(`${BASE_URL}/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.err || "Failed to delete attendance record");
+    }
+
+    return await response.json();
+  } catch (err) {
+    throw new Error(`Failed to delete attendance record: ${err.message}`);
+  }
+};
+
 export default {
   getAllAttendance,
   getFilteredAttendance,
   postScanToday,
+  getAttendanceById,
+  deleteAttendance,
 };

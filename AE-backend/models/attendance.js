@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Schema, model } = mongoose;
+const { Schema } = mongoose;
 const { schema: attendanceRecordsSchema } = require("./attendanceRecords");
 
 const attendanceSchema = new Schema(
@@ -18,7 +18,9 @@ const attendanceSchema = new Schema(
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
+    id: false, // Don't generate an id virtual
   }
 );
 
-module.exports = model("Attendance", attendanceSchema);
+const AttendanceModel = mongoose.model("Attendance", attendanceSchema);
+module.exports = AttendanceModel;
