@@ -2,7 +2,7 @@ import React from 'react';
 import '../../css/NavBar.css';
 import { Link } from "react-router";
 
-function NavBar() {
+function NavBar({ user }) {
 
 
     return (
@@ -12,32 +12,48 @@ function NavBar() {
             </div>
             <ul className="nav-links">
                 <li className="nav-item">
-                    {/* <p>Link to Home</p> */}
                     <Link to="/">HOME</Link>
                 </li>
-                <li className="nav-item">
-                    {/* <p>Link to Dashboard</p> */}
+                {/* <li className="nav-item">
                     <Link to="/dashboard">DASHBOARD</Link>
-                </li>
-                <li className="nav-item">
-                    {/* <p>Link to Student</p> */}
+                </li> */}
+                {user?.userRole === "admin" || user?.userRole === "staff" ? <li className="nav-item">
+                    <Link to="/dashboard">DASHBOARD</Link>
+                </li> : ''}
+
+                {/* <li className="nav-item">
                     <Link to="/students">STUDENTS</Link>
-                </li>
-                <li className="nav-item">
-                    {/* <p>Link to Attendance</p> */}
+                </li> */}
+                {user?.userRole === "admin" || user?.userRole === "staff" ? <li className="nav-item">
+                    <Link to="/students">STUDENTS</Link>
+                </li> : ''}
+
+                {/* <li className="nav-item">
                     <Link to="/attendance">ATTENDANCE</Link>
-                </li>
-                <li className="nav-item">
-                    {/* <p>Link to Scan Attendance</p> */}
+                </li> */}
+
+
+                {user?.userRole === "admin" || user?.userRole === "staff" ? <li className="nav-item">
+                    <Link to="/attendance">ATTENDANCE</Link>
+                </li> : ''}
+
+
+                {/* <li className="nav-item">
                     <Link to="/scfa">SCFA</Link>
-                </li>
-                <li className="nav-item">
-                    {/* <p>Link to Scan Attendance</p> */}
+                </li> */}
+                {user?.userRole === "admin" || user?.userRole === "staff" ? <li className="nav-item">
+                    <Link to="/scfa">SCFA</Link>
+                </li> : ''}
+
+
+                {/* <li className="nav-item">
                     <Link to="/scanToday">SCAN ATTENDANCE</Link>
-                </li>
+                </li> */}
+                {user?.userRole === "general" || user?.userRole === "admin" || user?.userRole === "staff" ? <li className="nav-item">
+                    <Link to="/scanToday">SCAN ATTENDANCE</Link>
+                </li> : ''}
             </ul>
             <div className="nav-footer">
-                {/* <p>Sign-In/Sign-Up</p> */}
                 <Link to="/sign-in">Sign-in</Link>
             </div>
         </nav>

@@ -5,7 +5,7 @@
 // import studentService from "../../services/studentService";
 import StudentGrid from "../StudentGrid/StudentGrid";
 
-const Student = () => {
+const Student = ({ user }) => {
     // const [students, setStudents] = useState([]);
 
     // useEffect(() => {
@@ -27,7 +27,7 @@ const Student = () => {
     return (
         <>
             <div>
-                <StudentGrid />
+                <StudentGrid user={user} />
             </div>
         </>
     )

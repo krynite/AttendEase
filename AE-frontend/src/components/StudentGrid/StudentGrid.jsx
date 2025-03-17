@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import StudentGridList from '../StudentGridList/StudentGridList';
 import studentService from "../../services/studentService";
 
-const StudentGrid = () => {
+const StudentGrid = ({ user }) => {
     const [filteredStudents, setFilteredStudents] = useState([]);
     const [totalStudentCount, setTotalStudentCount] = useState(0);
     const [loading, setLoading] = useState(false);

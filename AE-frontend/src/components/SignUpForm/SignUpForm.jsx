@@ -19,9 +19,11 @@ const SignUpForm = () => {
         username: '',
         password: '',
         passwordConf: '',
+        userRole: '',
     });
 
-    const { username, password, passwordConf } = formData;
+
+    const { username, password, passwordConf, userRole } = formData;
 
     const handleChange = (event) => {
         // setMessage('');
@@ -40,7 +42,7 @@ const SignUpForm = () => {
     };
 
     const isFormInvalid = () => {
-        return !(username && password && password === passwordConf);
+        return !(username && password && password === passwordConf && userRole);
     };
 
     // const capitalizeFirstLetter = (string) => {
@@ -65,6 +67,15 @@ const SignUpForm = () => {
                 <div>
                     <label htmlFor="confirm">Confirm Password:</label> <br />
                     <input type="password" id="confirm" name="passwordConf" value={passwordConf} onChange={handleChange} required />
+                </div>
+                <div>
+                    <label htmlFor="userRole">Select Role:</label> <br />
+                    <select id="userRole" name="userRole" value={userRole} onChange={handleChange} required>
+                        <option value="">Select a role</option>
+                        <option value="admin">Admin</option>
+                        <option value="staff">Staff</option>
+                        <option value="general">General</option>
+                    </select>
                 </div>
 
                 <button type="submit" disabled={isFormInvalid()}>Submit</button>

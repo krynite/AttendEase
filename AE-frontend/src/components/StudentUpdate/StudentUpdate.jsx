@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import studentService from '../../services/studentService';
 
-const StudentUpdate = () => {
+const StudentUpdate = ({ user }) => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [success, setSuccess] = useState('')
@@ -63,9 +63,9 @@ const StudentUpdate = () => {
         try {
             await studentService.updateStudent(id, formData);
             setSuccess('true');
-            // setTimeout(() => {
-            //     navigate(`/students/${id}`);
-            // }, 2000);
+            setTimeout(() => {
+                navigate(`/students/${id}`);
+            }, 2000);
             navigate(`/students/${id}`);
             setSuccess('false');
         } catch (err) {
@@ -132,7 +132,7 @@ const StudentUpdate = () => {
                         <option value="denied">Denied</option>
                     </select>
                 </div>
-                <button type="submit" disabled={success}>Update Student</button>
+                {user?.userRole === "admin" ? <button type="submit" disabled={success}>Update Student</button> : ''}
                 <Link to={`/students/${id}`}>Cancel</Link>
             </form>
 
