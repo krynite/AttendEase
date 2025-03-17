@@ -45,7 +45,7 @@ const getStudentById = async (studentId) => {
 
 // New search, CORRRECTION!!
 const getFilteredStudents = async (filters) => {
-  console.log(`FILTERS ${filters}`);
+  // console.log(`FILTERS ${filters}`);
   try {
     const response = await fetch(`${BASE_URL}/filter`, {
       method: "POST",

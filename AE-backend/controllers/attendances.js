@@ -6,6 +6,7 @@ const Attendance = require("../models/attendance");
 const Student = require("../models/student");
 const verifyToken = require("../middleware/verify-token");
 const student = require("../models/student");
+const attendanceRecords = require("../models/attendanceRecords");
 
 // HTML codes: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
 
@@ -282,64 +283,104 @@ router.post("/scanToday", verifyToken, async (req, res) => {
 //   }
 // });
 
+// router.post("/filter", verifyToken, async (req, res) => {
+//   try {
+//     const { attendanceDate, dateRangeEnd, studentLevel } = req.body;
+//     let matchedAttendances = [];
+
+//     if (attendanceDate) {
+//       let startDate = new Date(attendanceDate);
+//       startDate.setHours(0, 0, 0, 0);
+
+//       let endDate;
+//       if (dateRangeEnd) {
+//         // Date range (week/month)
+//         endDate = new Date(dateRangeEnd);
+//       } else {
+//         // Single day
+//         endDate = new Date(attendanceDate);
+//       }
+//       endDate.setHours(23, 59, 59, 999);
+
+//       matchedAttendances = await Attendance.find({
+//         attendanceDate: {
+//           $gte: startDate,
+//           $lte: endDate,
+//         },
+//       });
+//     } else {
+//       matchedAttendances = await Attendance.find({});
+//     }
+
+//     // Populate student data
+//     const populatedRecords = await Attendance.populate(matchedAttendances, {
+//       path: "attendanceName",
+//       model: "Student",
+//       select: "studentName studentIc dateOfBirth scfaStatus gender",
+//     });
+
+//     // Apply student level filter
+//     const resultsWithLevel = [];
+
+//     for (const record of populatedRecords) {
+//       if (record.attendanceName) {
+//         const student = await Student.findById(record.attendanceName._id);
+
+//         if (student) {
+//           const studentObj = student.toObject();
+//           const level = calculateStudentLevel(studentObj.studentAge);
+//           record.attendanceName.studentLevel = level;
+
+//           if (!studentLevel || level === studentLevel) {
+//             resultsWithLevel.push(record);
+//           }
+//         }
+//       }
+//     }
+
+//     res.json(resultsWithLevel);
+//   } catch (err) {
+//     console.error("Filter error:", err);
+//     res.status(500).json({ err: err.message });
+//   }
+// });
+
 router.post("/filter", verifyToken, async (req, res) => {
+  const {
+    studentLevel,
+    attendanceStartDate, // backup data. not epoch.
+    attendanceEndDate, // backup data
+    attendanceStartEpoch,
+    attendanceEndEpoch,
+  } = req.body;
+
+  const startDate = attendanceStartEpoch;
+  const endDate = attendanceEndEpoch;
+
   try {
-    const { attendanceDate, dateRangeEnd, studentLevel } = req.body;
-    let matchedAttendances = [];
-
-    if (attendanceDate) {
-      let startDate = new Date(attendanceDate);
-      startDate.setHours(0, 0, 0, 0);
-
-      let endDate;
-      if (dateRangeEnd) {
-        // Date range (week/month)
-        endDate = new Date(dateRangeEnd);
-      } else {
-        // Single day
-        endDate = new Date(attendanceDate);
-      }
-      endDate.setHours(23, 59, 59, 999);
-
-      matchedAttendances = await Attendance.find({
-        attendanceDate: {
-          $gte: startDate,
-          $lte: endDate,
-        },
-      });
-    } else {
-      matchedAttendances = await Attendance.find({});
-    }
-
-    // Populate student data
-    const populatedRecords = await Attendance.populate(matchedAttendances, {
+    const attendanceRecords = await Attendance.find({
+      attendanceDate: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    }).populate({
       path: "attendanceName",
       model: "Student",
-      select: "studentName studentIc dateOfBirth scfaStatus gender",
+      select: "studentName enrollStatus scfaStatus studentAge studentLevel",
+      options: { virtual: true },
     });
 
-    // Apply student level filter
-    const resultsWithLevel = [];
-
-    for (const record of populatedRecords) {
-      if (record.attendanceName) {
-        const student = await Student.findById(record.attendanceName._id);
-
-        if (student) {
-          const studentObj = student.toObject();
-          const level = calculateStudentLevel(studentObj.studentAge);
-          record.attendanceName.studentLevel = level;
-
-          if (!studentLevel || level === studentLevel) {
-            resultsWithLevel.push(record);
-          }
-        }
-      }
+    let filteredRecords = attendanceRecords;
+    if (studentLevel) {
+      filteredRecords = attendanceRecords.filter(
+        (record) => record.attendanceName.studentLevel
+      );
     }
+    console.log(`------------------filteredRecords ${filteredRecords}`);
 
-    res.json(resultsWithLevel);
+    res.status(200).json(filteredRecords);
   } catch (err) {
-    console.error("Filter error:", err);
+    console.log(`------------------Error Message: ${err.message}`);
     res.status(500).json({ err: err.message });
   }
 });

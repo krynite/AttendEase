@@ -22,37 +22,29 @@ const getAllAttendance = async () => {
 };
 
 const getFilteredAttendance = async (filters) => {
+  // console.log(
+  //   `---------------------------filters ${filters.attendanceEndDate}`
+  // );
   try {
-    // Transform filters for backend
-    const apiFilters = { ...filters };
-
-    if (filters.weekRange) {
-      apiFilters.attendanceDate = filters.weekRange.startDate;
-      apiFilters.dateRangeEnd = filters.weekRange.endDate;
-      delete apiFilters.weekRange;
-    } else if (filters.monthYear) {
-      apiFilters.attendanceDate = filters.monthYear.startDate;
-      apiFilters.dateRangeEnd = filters.monthYear.endDate;
-      delete apiFilters.monthYear;
-    }
-
     const response = await fetch(`${BASE_URL}/filter`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify(apiFilters),
+      body: JSON.stringify(filters),
     });
 
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.err || "Failed to fetch filtered attendance");
     }
-
-    return await response.json();
+    const data = await response.json();
+    return data;
   } catch (err) {
-    throw new Error(`Failed to fetch filtered attendance: ${err.message}`);
+    throw new Error(
+      `123123Failed to fetch filtered attendance: ${err.message}`
+    );
   }
 };
 

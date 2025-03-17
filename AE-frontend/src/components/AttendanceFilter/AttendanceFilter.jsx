@@ -198,6 +198,8 @@ const AttendanceFilter = () => {
         attendanceEndEpoch: null,
     })
 
+    const [filteredAttendance, setFilteredAttendance] = useState([])
+
     const [weeks, setWeeks] = useState({
         weeklyAttendance: '',
     })
@@ -253,7 +255,7 @@ const AttendanceFilter = () => {
 
         // Calculate Monday date (start of week)
         // If today is Sunday (0), go back 6 days, if Monday (1), go back 0 days, etc.
-        const mondayOffset = day === 0 ? -6 : 1 - day;
+        const mondayOffset = day === 0 ? -6 : 1 - day;  // Thursday (day=5)  1-5 = -4  || day is now 1 aka Monday
         const monday = new Date(date);
         monday.setDate(date.getDate() + mondayOffset);
 
@@ -263,16 +265,16 @@ const AttendanceFilter = () => {
         const saturday = new Date(date);
         saturday.setDate(date.getDate() + saturdayOffset);
 
-        // Set to beginning Monday (00:00:00)
+        // set Monday time
         monday.setHours(0, 0, 0, 0);
 
-        // Set end of Saturday (23:59:59)
+        // set Saturday time
         saturday.setHours(23, 59, 59, 999);
 
         const mondayEpoch = monday.getTime();
         const saturdayEpoch = saturday.getTime();
 
-        // Format dates to YYYY-MM-DD for the input fields
+        //  YYYY-MM-DD for the input fields
         const formatDate = (date) => {
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -290,22 +292,21 @@ const AttendanceFilter = () => {
     };
 
     useEffect(() => {
-        const fetchFilteredAttendanceData = async () => {
+        const fetchFilteredAttendance = async () => {
             try {
                 // Call the service with the current filters
                 const data = await attendanceService.getFilteredAttendance(filters);
+                console.log(`-----------test fetchFilteredAttendance: ${filters.studentLevel}`)
                 setAttendanceData(data);
             } catch (err) {
                 console.error("Error fetching filtered attendance:", err);
                 // setError(`Failed to fetch attendance data: ${err.message}`);
-            } finally {
-                // setLoading(false);
             }
         };
 
         // Only fetch if there are active filters
         if (filters.attendanceDate || filters.studentLevel) {
-            fetchFilteredAttendanceData();
+            fetchFilteredAttendance();
         }
     }, [filters]);
 
@@ -325,16 +326,21 @@ const AttendanceFilter = () => {
 
 
                 </select>
+
                 <div>
                     <label>Attendance Start Date: </label>
                     <input type="date" name="attendanceStartDate" value={filters.attendanceStartDate || ''} onChange={handleDateChange} />
                     <label>Attendance End Date: </label>
                     <input type="date" name="attendanceEndDate" value={filters.attendanceEndDate || ''} onChange={handleDateChange} />
                 </div>
+
                 <label>Select Week: </label>
                 <input type="date" name="weeklyAttendance" value={weeks.weeklyAttendance || ''} onChange={handleWeekChange} />
-
             </div >
+            <div>
+
+
+            </div>
 
         </>
     )
