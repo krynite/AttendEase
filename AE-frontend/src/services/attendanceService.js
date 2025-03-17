@@ -5,7 +5,7 @@ const getAllAttendance = async () => {
     const response = await fetch(BASE_URL, {
       method: "GET",
       headers: {
-        "Content-Type": "applicatiopn/json",
+        "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
