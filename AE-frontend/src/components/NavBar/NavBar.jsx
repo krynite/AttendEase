@@ -14,23 +14,16 @@ function NavBar({ user }) {
                 <li className="nav-item">
                     <Link to="/">HOME</Link>
                 </li>
-                {/* <li className="nav-item">
-                    <Link to="/dashboard">DASHBOARD</Link>
-                </li> */}
+
                 {user?.userRole === "admin" || user?.userRole === "staff" ? <li className="nav-item">
                     <Link to="/dashboard">DASHBOARD</Link>
                 </li> : ''}
 
-                {/* <li className="nav-item">
-                    <Link to="/students">STUDENTS</Link>
-                </li> */}
+
                 {user?.userRole === "admin" || user?.userRole === "staff" ? <li className="nav-item">
                     <Link to="/students">STUDENTS</Link>
                 </li> : ''}
 
-                {/* <li className="nav-item">
-                    <Link to="/attendance">ATTENDANCE</Link>
-                </li> */}
 
 
                 {user?.userRole === "admin" || user?.userRole === "staff" ? <li className="nav-item">
@@ -38,17 +31,12 @@ function NavBar({ user }) {
                 </li> : ''}
 
 
-                {/* <li className="nav-item">
-                    <Link to="/scfa">SCFA</Link>
-                </li> */}
+
                 {user?.userRole === "admin" || user?.userRole === "staff" ? <li className="nav-item">
                     <Link to="/scfa">SCFA</Link>
                 </li> : ''}
 
 
-                {/* <li className="nav-item">
-                    <Link to="/scanToday">SCAN ATTENDANCE</Link>
-                </li> */}
                 {user?.userRole === "general" || user?.userRole === "admin" || user?.userRole === "staff" ? <li className="nav-item">
                     <Link to="/scanToday">SCAN ATTENDANCE</Link>
                 </li> : ''}

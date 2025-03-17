@@ -20,18 +20,16 @@ const AttendanceDetail = ({ user }) => {
         fetchAttendanceDetails();
     }, [id]);
 
-    // Function to format date in a readable format
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
+        return date.toLocaleDateString('en-US', {  //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString
             year: 'numeric',
             month: 'long',
             day: 'numeric'
         });
     };
 
-    // Handle delete attendance
     const handleDeleteAttendance = async () => {
         if (window.confirm('Are you sure you want to delete this attendance record? This action cannot be undone.')) {
             try {

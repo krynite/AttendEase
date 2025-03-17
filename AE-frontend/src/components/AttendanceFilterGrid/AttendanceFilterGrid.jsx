@@ -11,7 +11,7 @@ const AttendanceFilterGrid = ({ filteredAttendance }) => {
     // Format time to a readable format
     const formatTime = (timeString) => {
         const time = new Date(timeString);
-        return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });  //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString
     };
 
     // Format the time duration as hours and minutes

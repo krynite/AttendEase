@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 // import './StudentGrid.css';
 import StudentGridList from '../StudentGridList/StudentGridList';
 import studentService from "../../services/studentService";
+import '../../css/StudentGrid.css';
 
 const StudentGrid = ({ user }) => {
     const [filteredStudents, setFilteredStudents] = useState([]);

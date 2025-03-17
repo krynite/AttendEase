@@ -224,8 +224,8 @@ router.post("/filter", verifyToken, async (req, res) => {
     attendanceEndEpoch,
   } = req.body;
 
-  const startDate = attendanceStartEpoch;
-  const endDate = attendanceEndEpoch;
+  const startDate = Number(attendanceStartEpoch);
+  const endDate = Number(attendanceEndEpoch);
 
   try {
     const attendanceRecords = await Attendance.find({

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import './App.css'
 import { UserContext } from "./contexts/UserContext";

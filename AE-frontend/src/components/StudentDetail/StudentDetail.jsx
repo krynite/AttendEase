@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import studentService from '../../services/studentService';
+import '../../css/StudentDetail.css';
 // import StudentUpdate from '../StudentUpdate/StudentUpdate'
 
 const StudentDetails = ({ user }) => {
@@ -54,6 +55,19 @@ const StudentDetails = ({ user }) => {
         return status;
     };
 
+    // Function to get status class
+    const getStatusClass = (status, type) => {
+        if (type === 'enroll') {
+            return status === 'active' ? 'status-active' : 'status-inactive';
+        } else if (type === 'scfa') {
+            if (status === 'active-beneficiary') return 'status-beneficiary';
+            if (status === 'pending') return 'status-pending';
+            if (status === 'denied') return 'status-inactive';
+            return 'status-inactive';
+        }
+        return '';
+    };
+
     // Calculate student level based on age
     const calculateStudentLevel = (age) => {
         if (!age || typeof age !== "number") return "Unknown";
@@ -64,34 +78,43 @@ const StudentDetails = ({ user }) => {
         return `P${age - 6}`;
     };
 
-    if (loading) return <div>Loading student details...</div>;
+    if (loading) return <div className="loading">Loading student details...</div>;
 
-    if (error) return <div>Error: {error}</div>;
+    if (error) return <div className="error">Error: {error}</div>;
 
-    if (!student) return <div>Student not found</div>;
+    if (!student) return <div className="error">Student not found</div>;
 
     return (
-        <article>
+        <article className="student-details">
             <header>
                 <h1>{student.studentName}</h1>
                 <nav>
                     <Link to="/students">Back to Students</Link>
-                    {/* <Link to={`/students/update/${id}`}>Update Student</Link> */}
                     {user?.userRole === "admin" ? <Link to={`/students/update/${id}`}>Update Student</Link> : ''}
                 </nav>
             </header>
 
-            <section>
+            <section className="status-section">
                 <ul>
-                    <li>Enrollment: {getStatusLabel(student.enrollStatus, 'enroll')}</li>
-                    <li>SCFA: {getStatusLabel(student.scfaStatus, 'scfa')}</li>
+                    <li>
+                        Enrollment:
+                        <span className={`status-indicator ${getStatusClass(student.enrollStatus, 'enroll')}`}>
+                            {getStatusLabel(student.enrollStatus, 'enroll')}
+                        </span>
+                    </li>
+                    <li>
+                        SCFA:
+                        <span className={`status-indicator ${getStatusClass(student.scfaStatus, 'scfa')}`}>
+                            {getStatusLabel(student.scfaStatus, 'scfa')}
+                        </span>
+                    </li>
                 </ul>
             </section>
 
             <main>
-                <section>
+                <section className="info-section">
                     <h2>Personal Information</h2>
-                    <table>
+                    <table className="info-table">
                         <tbody>
                             <tr>
                                 <th>Name:</th>
@@ -121,9 +144,9 @@ const StudentDetails = ({ user }) => {
                     </table>
                 </section>
 
-                <section>
+                <section className="info-section">
                     <h2>School Information</h2>
-                    <table>
+                    <table className="info-table">
                         <tbody>
                             <tr>
                                 <th>School Name:</th>
@@ -141,13 +164,17 @@ const StudentDetails = ({ user }) => {
                     </table>
                 </section>
 
-                <section>
+                <section className="info-section">
                     <h2>Enrollment Information</h2>
-                    <table>
+                    <table className="info-table">
                         <tbody>
                             <tr>
                                 <th>Enrollment Status:</th>
-                                <td>{getStatusLabel(student.enrollStatus, 'enroll')}</td>
+                                <td>
+                                    <span className={`status-indicator ${getStatusClass(student.enrollStatus, 'enroll')}`}>
+                                        {getStatusLabel(student.enrollStatus, 'enroll')}
+                                    </span>
+                                </td>
                             </tr>
                             <tr>
                                 <th>Enrollment Date:</th>
@@ -155,7 +182,11 @@ const StudentDetails = ({ user }) => {
                             </tr>
                             <tr>
                                 <th>SCFA Status:</th>
-                                <td>{getStatusLabel(student.scfaStatus, 'scfa')}</td>
+                                <td>
+                                    <span className={`status-indicator ${getStatusClass(student.scfaStatus, 'scfa')}`}>
+                                        {getStatusLabel(student.scfaStatus, 'scfa')}
+                                    </span>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
