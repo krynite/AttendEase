@@ -45,7 +45,7 @@ const getStudentById = async (studentId) => {
 
 // New search, CORRRECTION!!
 const getFilteredStudents = async (filters) => {
-    console.log(`FILTERS ${filters}`)
+  console.log(`FILTERS ${filters}`);
   try {
     const response = await fetch(`${BASE_URL}/filter`, {
       method: "POST",
@@ -89,9 +89,32 @@ const getSchoolOptions = async () => {
   }
 };
 
+const updateStudent = async (studentId, studentData) => {
+  try {
+    const response = await fetch(`${BASE_URL}/${studentId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(studentData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to update student: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    throw new Error(`Failed to update student: ${err.message}`);
+  }
+};
+
 export default {
   getAllStudents,
   getStudentById,
   getFilteredStudents,
   getSchoolOptions,
+  updateStudent,
 };

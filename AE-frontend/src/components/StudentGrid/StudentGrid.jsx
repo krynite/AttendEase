@@ -18,7 +18,7 @@ const StudentGrid = () => {
         studentLevel: '-'
     });
 
-    // get table options
+    // get school table options
     useEffect(() => {
         const fetchSchoolOptions = async () => {
             try {
@@ -56,6 +56,7 @@ const StudentGrid = () => {
                 setLoading(true);
                 const data = await studentService.getFilteredStudents(filters);
                 setFilteredStudents(data);
+
                 // Update total count if this is first filter application
                 if (totalStudentCount === 0 && data.length > 0) {
                     setTotalStudentCount(data.length);

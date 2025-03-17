@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import studentService from '../../services/studentService';
+// import StudentUpdate from '../StudentUpdate/StudentUpdate'
 
 const StudentDetails = () => {
     const { id } = useParams();
@@ -75,6 +76,7 @@ const StudentDetails = () => {
                 <h1>{student.studentName}</h1>
                 <nav>
                     <Link to="/students">Back to Students</Link>
+                    <Link to={`/students/update/${id}`}>Update Student</Link>
                 </nav>
             </header>
 

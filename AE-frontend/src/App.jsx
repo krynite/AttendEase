@@ -11,6 +11,7 @@ import StudentDetails from "./components/StudentDetail/StudentDetail";
 import Attendance from "./components/Attendance/Attendance"
 import ScanAttendance from "./components/ScanAttendance/ScanAttendance";
 import Dashboard from "./components/Dashboard/Dashboard";
+import StudentUpdate from "./components/StudentUpdate/StudentUpdate"
 
 
 
@@ -33,6 +34,7 @@ const App = () => {
           <Route path="/attendance" element={<Attendance />} />
           <Route path="/scanToday" element={<ScanAttendance />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/students/update/:id" element={<StudentUpdate />} />
 
 
         </Routes>

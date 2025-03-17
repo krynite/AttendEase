@@ -26,7 +26,7 @@ const ScanAttendance = () => {
         try {
             const formData = {
                 id: id.trim(),
-                timeAll: Date.now() + (28888000)
+                timeAll: Date.now() + (28888000)  // for sg time +8hrs
             };
 
             await attendanceService.postScanToday(formData);

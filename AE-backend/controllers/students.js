@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 const Student = require("../models/student");
 const verifyToken = require("../middleware/verify-token");
+const { verify } = require("jsonwebtoken");
 
 // age -6 to level.
 const calculateStudentLevel = (age) => {
@@ -132,6 +133,24 @@ router.get("/:studentId", verifyToken, async (req, res) => {
     res.json(studentObj);
   } catch (err) {
     res.status(500).json({ err: err.message });
+  }
+});
+
+router.put("/:studentId", verifyToken, async (req, res) => {
+  try {
+    const studentId = req.params.studentId;
+    console.log(`-----------------------------studentId : ${studentId}`);
+    const student = await Student.findByIdAndUpdate(studentId, req.body, {
+      new: true, // returns updated data
+      runValidators: true,
+    });
+
+    if (!student) {
+      return res.status(404).json({ err: "Student not found." });
+    }
+    return res.status(200).json(student);
+  } catch (err) {
+    return res.status(404).json({ err: err.message });
   }
 });
 
