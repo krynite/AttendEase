@@ -52,10 +52,6 @@ const App = () => {
 
 
 
-
-
-
-
         <Routes>
           {/* Public routes */}
           <Route path="/sign-in" element={<SignInForm />} />
