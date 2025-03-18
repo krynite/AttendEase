@@ -1,4 +1,12 @@
-# AttendEase
+# Project 4: AttendEase
+
+This project is about developing an Attendance Tracking app targeting at student care centres in SG. It utilizes React as frontend and ExpressJS and MongoDB as backend.
+
+# Description
+
+This project allows the user to track attendance of students with various requirements. As some students require SCFA support, this app allows the tracking of such students to meet the requirements set by SCFA. This allows the centre to inform their caregivers early on to prevent a situation of them not meeting the requirements.
+
+Attendance taking is also automated, where students only need to scan in their \_id, and the app will create a daily attendance for them. The app also doesn't require a separate scan out system, it utilizes the same kiosk terminal and the same url/page, and determines the timeOut base on the attendance and updates accordingly.
 
 ### Work Done
 
@@ -76,4 +84,26 @@ Frontend:
 - Login/Authenticate (signup done)
 - Student List All
 - List Targets
--
+
+14/3/2025
+
+1. Redid Frontend. Discovered that I was loading the Frontend instead of the Backend. Instead of fetching all data and sorting them, I should be requesting from Backend and filtering from there.
+2. Added frontend useEffect to retrieve the school using Mongodb's own ".distinct".
+
+15/3/2025
+
+1. Fixed front end StudentGrid not displaying properly.
+2. Added separate component for table.
+3. Tested charts, not implementing. (optional)
+4. created
+
+16/3/2025
+
+1. Fixed Single Day Attendance Filtering Works.
+2. Added Date range for Attendance Filtering, bricked Single Day Attendance. Kept Date Range instead. Added backend to receive the filtering requirements from Frontend.
+3. Fixed backend not retrieving Attandance Range.
+
+17/3/2025
+
+1. Added user roles and the sites they can go to.
+2. Fixed Attendance Range displaying null on studentLevel. Fixed attendanceSchema and attendanceRecordsSchema virtual: true.
