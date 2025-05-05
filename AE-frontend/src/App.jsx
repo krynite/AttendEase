@@ -32,7 +32,7 @@ const App = () => {
   return (
 
     <div className="app-container">
-      <NavBar user={user} />
+      <NavBar/>
 
       <main className="main-content">
 
