@@ -1,67 +1,99 @@
-import { useState, useEffect } from 'react';
-import attendanceService from '../../services/attendanceService';
-import AttendanceFilterGrid from '../AttendanceFilterGrid/AttendanceFilterGrid';
+import { useState, useEffect } from "react";
+import attendanceService from "../../services/attendanceService";
+import AttendanceFilterGrid from "../AttendanceFilterGrid/AttendanceFilterGrid";
 
 const AttendanceFilter = () => {
     const [filters, setFilters] = useState({
-        studentLevel: '-',
-        attendanceStartDate: '',
-        attendanceEndDate: '',
+        studentLevel: "-",
+        attendanceStartDate: "",
+        attendanceEndDate: "",
         attendanceStartEpoch: null,
         attendanceEndEpoch: null,
-    })
+    });
 
-    const [filteredAttendance, setFilteredAttendance] = useState([])
+    const [filteredAttendance, setFilteredAttendance] = useState([]);
 
     const [weeks, setWeeks] = useState({
-        weeklyAttendance: '',
-    })
+        weeklyAttendance: "",
+    });
 
     // const [attendanceData, setAttendanceData] = useState([])
 
     const filterOptions = {
         studentLevel: [
-            { value: 'P1', label: 'P1' },
-            { value: 'P2', label: 'P2' },
-            { value: 'P3', label: 'P3' },
-            { value: 'P4', label: 'P4' },
-            { value: 'P5', label: 'P5' },
-            { value: 'P6', label: 'P6' },
+            { value: "P1", label: "P1" },
+            { value: "P2", label: "P2" },
+            { value: "P3", label: "P3" },
+            { value: "P4", label: "P4" },
+            { value: "P5", label: "P5" },
+            { value: "P6", label: "P6" },
             // { value: 'Below P1', label: 'Below P1' },
             // { value: 'Above P6', label: 'Above P6' },
             // { value: 'Unknown', label: 'Unknown' }
         ],
-    }
+    };
 
-    const handleFilterChange = (event) => {
-        // console.log(`Before handleFilterChange ${JSON.stringify(filters)}`)
+    const handleLevelChange = (event) => {
+        console.log(
+            `Before handleFilterChange ${JSON.stringify(event.target.value)}`
+        );
         setFilters({
-            ...filters, [event.target.name]: event.target.value
-        })
+            ...filters,
+            [event.target.name]: event.target.value,
+        });
 
         //? Below for testing
         // setFilters(prevFilters => {
         //     const newFilters = {
-        //         ...prevFilters, 
+        //         ...prevFilters,
         //         [event.target.name]: event.target.value
         //     };
         //     console.log(`After handleFilterChange ${JSON.stringify(newFilters)}`);
         //     return newFilters;
         // });
         //! LOOK HERE! -------------------------------------------------------------------------------------------------------------------------
-    }
+    };
+
+    const convertToEpoch = (date) => {
+        //? Parameters are Number based.
+        const newDate = new Date(date);
+        return newDate.getTime();
+    };
 
     const handleDateChange = (e) => {
-        setFilters({
-            ...filters,
-            [e.target.name]: e.target.value
+        console.log(`Testing Single Date`);
+        console.log(`Start Date: ${e.target.value}`);
+
+        // Reference Above:
+        // studentLevel: '-',
+        // attendanceStartDate: '',
+        // attendanceEndDate: '',
+        // attendanceStartEpoch: null,
+        // attendanceEndEpoch: null,
+
+        // Reference Below:
+        // <input type="date" name="attendanceStartDate" value={filters.attendanceStartDate || ''}  onChange={handleDateChange} />
+        // <input type="date" name="attendanceEndDate" value={filters.attendanceEndDate || ''} onChange={handleDateChange} />
+
+        setFilters((prevFilters) => {
+            const newFilters = {
+                ...prevFilters,
+                [e.target.name]: e.target.value,
+                ...(e.target.name === "attendanceStartDate"
+                    ? { attendanceStartEpoch: convertToEpoch(e.target.value) }
+                    : {}),
+                ...(e.target.name === "attendanceEndDate"
+                    ? { attendanceEndEpoch: convertToEpoch(e.target.value) }
+                    : {}),
+            };
+            return newFilters;
         });
     };
 
     const handleWeekChange = (e) => {
         setWeeks({
             ...weeks,
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
         });
     };
 
@@ -73,12 +105,10 @@ const AttendanceFilter = () => {
         }
     }, [weeks.weeklyAttendance]);
 
-
     // Auto Fill in Start and End Date   (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDay)
     const calculateWeekDates = (selectedDate) => {
         const date = new Date(selectedDate);
-        const day = date.getDay(); // 0 = Sunday, 1 = Monday, 2 = Tuesday 
-
+        const day = date.getDay(); // 0 = Sunday, 1 = Monday, 2 = Tuesday
 
         // Thursday (day=5)  1-5 = -4  || day is now 1 aka Monday
         const mondayOffset = day === 0 ? -6 : 1 - day;
@@ -102,80 +132,92 @@ const AttendanceFilter = () => {
         //  YYYY-MM-DD for the input fields
         const formatDate = (date) => {
             const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
             return `${year}-${month}-${day}`;
         };
 
-        setFilters(prev => ({
+        setFilters((prev) => ({
             ...prev,
             attendanceStartDate: formatDate(monday),
             attendanceEndDate: formatDate(saturday),
             attendanceStartEpoch: mondayEpoch,
-            attendanceEndEpoch: saturdayEpoch
+            attendanceEndEpoch: saturdayEpoch,
         }));
     };
-    // #endregion 
+    // #endregion
 
     // useEffect - getFilteredAttendance
     useEffect(() => {
         const fetchFilteredAttendance = async () => {
+            console.log(`Filters ${JSON.stringify(filters)}`);
             try {
                 // Call the service with the current filters
                 const data = await attendanceService.getFilteredAttendance(filters);
-                //! LOOK HERE! -------------------------------------------------------------------------------------------------------------------------
-                // console.log(`**************************************test fetchFilteredAttendance: ${JSON.stringify(filters)}`)
                 setFilteredAttendance(data);
             } catch (err) {
                 console.error("Error fetching filtered attendance:", err);
                 // setError(`Failed to fetch attendance data: ${err.message}`);
             }
         };
-
+        // console.log(`Filter Attendance ${JSON.stringify(filters.attendanceStartEpoch)}`)
         // Only fetch if there are active filters
         if (filters.attendanceDate || filters.studentLevel) {
             fetchFilteredAttendance();
         }
     }, [filters]);
 
-    
     // #region Return
     return (
         <>
             <h1>Attendance Filter</h1>
             <div>
                 <label>Student Level: </label>
-                <select id="student-level" name="studentLevel" value={filters.studentLevel} onChange={handleFilterChange}>
+                <select
+                    id="student-level"
+                    name="studentLevel"
+                    value={filters.studentLevel}
+                    onChange={handleLevelChange}
+                >
                     <option value="-">-</option>
-                    <option value='all'>All</option>
+                    <option value="all">All</option>
                     {filterOptions.studentLevel.map((option) => (
                         <option key={option.value} value={option.value}>
                             {option.label}
                         </option>
                     ))}
-
-
                 </select>
 
                 <div>
                     <label>Attendance Start Date: </label>
-                    <input type="date" name="attendanceStartDate" value={filters.attendanceStartDate || ''} onChange={handleDateChange} />
+                    <input
+                        type="date"
+                        name="attendanceStartDate"
+                        value={filters.attendanceStartDate || ""}
+                        onChange={handleDateChange}
+                    />
                     <label>Attendance End Date: </label>
-                    <input type="date" name="attendanceEndDate" value={filters.attendanceEndDate || ''} onChange={handleDateChange} />
+                    <input
+                        type="date"
+                        name="attendanceEndDate"
+                        value={filters.attendanceEndDate || ""}
+                        onChange={handleDateChange}
+                    />
                 </div>
 
                 <label>Select Week: </label>
-                <input type="date" name="weeklyAttendance" value={weeks.weeklyAttendance || ''} onChange={handleWeekChange} />
-            </div >
+                <input
+                    type="date"
+                    name="weeklyAttendance"
+                    value={weeks.weeklyAttendance || ""}
+                    onChange={handleWeekChange}
+                />
+            </div>
             <div>
                 <AttendanceFilterGrid filteredAttendance={filteredAttendance} />
-
             </div>
-
         </>
-    )
+    );
     // #endregion
-}
+};
 export default AttendanceFilter;
-
-

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const AttendanceFilterGrid = ({ filteredAttendance }) => {
     // Check incoming data
-    console.log(`Attendance Filter Grid ${JSON.stringify(filteredAttendance)}`)
+    // console.log(`Attendance Filter Grid ${JSON.stringify(filteredAttendance)}`)
 
 
     // Format date to a readable format
