@@ -1,0 +1,124 @@
+.attendance-grid-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.attendance-grid-container h2 {
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.attendance-table th,
+.attendance-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.attendance-table th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+}
+
+.attendance-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.attendance-table .actions-column {
+    width: 120px;
+    text-align: center;
+}
+
+.attendance-record-link {
+    display: inline-block;
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.attendance-record-link:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    border: 1px dashed #ced4da;
+    margin-top: 1.5rem;
+}
+
+.empty-state p {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.requirement-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.requirement-met {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.requirement-not-met {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Time duration highlighting */
+.duration-good {
+    color: #155724;
+    font-weight: 500;
+}
+
+.duration-warning {
+    color: #856404;
+    font-weight: 500;
+}
+
+.duration-low {
+    color: #721c24;
+    font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .attendance-grid-container {
+        padding: 1rem;
+    }
+    
+    .attendance-table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    .attendance-table th,
+    .attendance-table td {
+        padding: 0.5rem;
+    }
+}

@@ -51,6 +51,7 @@ const ScanAttendance = () => {
                 <li>67ce5322298c820947bc3724 - for Morgan</li> */}
                 <li>681b083d71989331c5615d04 - for P1 Emily</li>
                 <li>681b083d71989331c5615d06 - P1 Nora Nelson</li>
+                <li>681b083d71989331c5615d0a - P1 Lucas Davis SCFA </li>
             </ul>
             {message && <p>{message}</p>}
 
