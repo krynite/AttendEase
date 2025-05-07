@@ -10,6 +10,7 @@ const getUserFromToken = () => {
         if (!token) return null;
 
         const decodedToken = JSON.parse(atob(token.split('.')[1]));
+        // console.log(`Decoded Token: ${decodedToken.payload}`)
         return decodedToken.payload || decodedToken;
     } catch (error) {
         console.error("Error getting user from token:", error);

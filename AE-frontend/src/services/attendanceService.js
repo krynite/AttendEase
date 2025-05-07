@@ -23,7 +23,7 @@ const getAllAttendance = async () => {
 
 const getFilteredAttendance = async (filters) => {
   // console.log(
-  //   `---------------------------filters ${filters.attendanceEndDate}`
+  //   `---------------------------filters ${JSON.stringify(filters)}`
   // );
   try {
     const response = await fetch(`${BASE_URL}/filter`, {

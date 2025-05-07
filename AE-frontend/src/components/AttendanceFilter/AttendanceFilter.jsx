@@ -2,10 +2,6 @@ import { useState, useEffect } from 'react';
 import attendanceService from '../../services/attendanceService';
 import AttendanceFilterGrid from '../AttendanceFilterGrid/AttendanceFilterGrid';
 
-
-
-
-
 const AttendanceFilter = () => {
     const [filters, setFilters] = useState({
         studentLevel: '-',
@@ -31,17 +27,28 @@ const AttendanceFilter = () => {
             { value: 'P4', label: 'P4' },
             { value: 'P5', label: 'P5' },
             { value: 'P6', label: 'P6' },
-            { value: 'Below P1', label: 'Below P1' },
-            { value: 'Above P6', label: 'Above P6' },
-            { value: 'Unknown', label: 'Unknown' }
+            // { value: 'Below P1', label: 'Below P1' },
+            // { value: 'Above P6', label: 'Above P6' },
+            // { value: 'Unknown', label: 'Unknown' }
         ],
     }
 
     const handleFilterChange = (event) => {
+        // console.log(`Before handleFilterChange ${JSON.stringify(filters)}`)
         setFilters({
             ...filters, [event.target.name]: event.target.value
         })
-        console.log(`testing handleFilterChange ${filters}`)
+
+        //? Below for testing
+        // setFilters(prevFilters => {
+        //     const newFilters = {
+        //         ...prevFilters, 
+        //         [event.target.name]: event.target.value
+        //     };
+        //     console.log(`After handleFilterChange ${JSON.stringify(newFilters)}`);
+        //     return newFilters;
+        // });
+        //! LOOK HERE! -------------------------------------------------------------------------------------------------------------------------
     }
 
     const handleDateChange = (e) => {
@@ -58,14 +65,16 @@ const AttendanceFilter = () => {
         });
     };
 
-    // tabulate start and end week
+    // #region - Not needed at the moment.
+    // Call calculateWeekDates and tabulate start and end week
     useEffect(() => {
         if (weeks.weeklyAttendance) {
             calculateWeekDates(weeks.weeklyAttendance);
         }
     }, [weeks.weeklyAttendance]);
 
-    //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDay
+
+    // Auto Fill in Start and End Date   (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDay)
     const calculateWeekDates = (selectedDate) => {
         const date = new Date(selectedDate);
         const day = date.getDay(); // 0 = Sunday, 1 = Monday, 2 = Tuesday 
@@ -106,13 +115,16 @@ const AttendanceFilter = () => {
             attendanceEndEpoch: saturdayEpoch
         }));
     };
+    // #endregion 
 
+    // useEffect - getFilteredAttendance
     useEffect(() => {
         const fetchFilteredAttendance = async () => {
             try {
                 // Call the service with the current filters
                 const data = await attendanceService.getFilteredAttendance(filters);
-                console.log(`-----------test fetchFilteredAttendance: ${filters.studentLevel}`)
+                //! LOOK HERE! -------------------------------------------------------------------------------------------------------------------------
+                // console.log(`**************************************test fetchFilteredAttendance: ${JSON.stringify(filters)}`)
                 setFilteredAttendance(data);
             } catch (err) {
                 console.error("Error fetching filtered attendance:", err);
@@ -126,6 +138,8 @@ const AttendanceFilter = () => {
         }
     }, [filters]);
 
+    
+    // #region Return
     return (
         <>
             <h1>Attendance Filter</h1>
@@ -160,6 +174,7 @@ const AttendanceFilter = () => {
 
         </>
     )
+    // #endregion
 }
 export default AttendanceFilter;
 

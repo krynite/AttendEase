@@ -2,6 +2,10 @@ import React from 'react';
 import { Link } from "react-router-dom";
 
 const AttendanceFilterGrid = ({ filteredAttendance }) => {
+    // Check incoming data
+    console.log(`Attendance Filter Grid ${JSON.stringify(filteredAttendance)}`)
+
+
     // Format date to a readable format
     const formatDate = (dateString) => {
         const date = new Date(dateString);

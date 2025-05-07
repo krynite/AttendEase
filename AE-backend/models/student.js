@@ -80,13 +80,13 @@ studentsSchema.virtual("studentLevel").get(function () {
   const age = this.studentAge;
 
   if (!age) return "Unknown";
-  if (age < 6) return "Below P1";
-  if (age === 6) return "P1";
-  if (age === 7) return "P2";
-  if (age === 8) return "P3";
-  if (age === 9) return "P4";
-  if (age === 10) return "P5";
-  if (age === 11) return "P6";
+  if (age < 7) return "Below P1";
+  if (age === 7) return "P1";
+  if (age === 8) return "P2";
+  if (age === 9) return "P3";
+  if (age === 10) return "P4";
+  if (age === 11) return "P5";
+  if (age === 12) return "P6";
   return "Above P6";
 });
 

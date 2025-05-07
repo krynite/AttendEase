@@ -46,9 +46,11 @@ const ScanAttendance = () => {
         <div>
             <h1>Scan Attendance</h1>
             <ul>Sample ID
-                <li>67ce5322298c820947bc3726 - for Steven</li>
+                {/* <li>67ce5322298c820947bc3726 - for Steven</li>
                 <li>67ce5322298c820947bc3725 - for Jane</li>
-                <li>67ce5322298c820947bc3724 - for Morgan</li>
+                <li>67ce5322298c820947bc3724 - for Morgan</li> */}
+                <li>681b083d71989331c5615d04 - for P1 Emily</li>
+                <li>681b083d71989331c5615d06 - P1 Nora Nelson</li>
             </ul>
             {message && <p>{message}</p>}
 

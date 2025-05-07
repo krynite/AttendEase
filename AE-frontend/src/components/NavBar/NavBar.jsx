@@ -78,11 +78,12 @@ function NavBar() {
 
 
 
-                    <Link to="/" onClick={handleSignOut}>Sign Out</Link>
+                    <Link to="/" onClick={handleSignOut}>Sign Out</Link><br/>
+                    Click <Link to="/sign-in"> here </Link> to sign in as another user
                     {/* <button onClick={handleSignOut}>Sign Out</button> */}
                 </div>
             ) : (
-                // "Not Signed in"
+
                 <div className="nav-footer">
                     <Link to="/sign-in">Sign-in</Link>
                 </div>
