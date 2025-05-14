@@ -133,12 +133,13 @@ const AttendanceFilter = () => {
                 setFilteredAttendance([]);
                 return;
             }
-            
+           
             setLoading(true);
             setError(null);
             
             try {
                 const data = await attendanceService.getFilteredAttendance(filters);
+
                 setFilteredAttendance(data);
                 setLoading(false);
             } catch (err) {

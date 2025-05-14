@@ -22,9 +22,9 @@ const getAllAttendance = async () => {
 };
 
 const getFilteredAttendance = async (filters) => {
-  // console.log(
-  //   `---------------------------filters ${JSON.stringify(filters)}`
-  // );
+  console.log(
+    `---------------------------filters ${JSON.stringify(filters)}`
+  );
   try {
     const response = await fetch(`${BASE_URL}/filter`, {
       method: "POST",
