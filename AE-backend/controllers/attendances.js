@@ -259,8 +259,9 @@ router.post("/scanToday", verifyToken, async (req, res) => {
         $lte: endDay,
       },
     });
-    console.log(`========================================================================${backReceivedTime}`)
+
     //* if no records, create new record.
+    // console.log(`This is before : ${backReceivedTime}`)
     if(!attendance){
       attendance = await Attendance.create({
         attendanceName: id,
@@ -274,12 +275,18 @@ router.post("/scanToday", verifyToken, async (req, res) => {
         ]
       })
       //* if yes records, add to attendanceRecords.timeOut
-    } 
+    } else {
       console.log(`You are seeing ELSE STATEMENT`)
-     await Attendance.updateOne(
+
+      const lastRecordsIdx = attendance.attendanceRecords.length -1
+
+      await Attendance.updateOne(
       {_id: attendance._id},{
-        $set: {timeOut: backReceivedTime},
-      });
+        $set: {
+          [`attendanceRecords.${lastRecordsIdx}.timeOut`] : backReceivedTime
+        },
+      })
+  }
     
 
 

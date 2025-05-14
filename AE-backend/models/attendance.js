@@ -13,7 +13,8 @@ const attendanceSchema = new Schema(
       type: Date,
       required: true,
     },
-    attendanceRecords: [attendanceRecordsSchema],
+    // attendanceRecords: [attendanceRecordsSchema],
+    attendanceRecords: {attendanceRecordsSchema},
   },
   {
     toJSON: { virtuals: true },
