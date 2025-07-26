@@ -89,7 +89,7 @@ router.post("/", verifyToken, async (req, res) => {
   }
 });
 
-// testing scan in  //! REDO
+// #region testing scan in  //! REDO
 // router.post("/scanToday", verifyToken, async (req, res) => {
 //   const { id, timeAll } = req.body; // id = student mongodbId, timeAll = scanned Time or Timestamp to MILLESECONDS!! 13 digits
 
@@ -214,44 +214,49 @@ router.post("/", verifyToken, async (req, res) => {
 //     return res.status(500).json({ err: err.message });
 //   }
 // });
+// #endregion
 
 router.post("/scanToday", verifyToken, async (req, res) => {
   const { id, timeAll } = req.body;
   //checking input (correct)
+  //console.log(`|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||`)
   const frontScannedTime = new Date(timeAll); //for mongo Date Obj
   const backReceivedTime = new Date(Date.now()); //for mongo Date Obj
-  console.log(`++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++${backReceivedTime}`)
+  console.log(
+    `++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++${backReceivedTime}`
+  );
   // console.log(frontScannedTime)
   // console.log(backReceivedTime)
 
+  // #region //* **WORKING** if statement for checking studentID + Error Msg + res
   if (!id) {
     res.status(400).json({ err: "ID Missing." });
   }
   if (!timeAll) {
     res.status(400).json({ err: "Timestamp Missing." });
   }
+  // #endregion
 
+  
   try {
-    // find student first.
+    //* find student first.
     const studentId = await Student.findById(id);
     if (!studentId) {
-      res
-        .status(404)
-        .json({
-          err: "Student not in system. Please add student to the system",
-        });
+      res.status(404).json({
+        err: "Student not in system. Please add student to the system",
+      });
     }
 
-    //* if theres records.
+    //* Find Attendance records.
     // select correct Day
     const today = new Date(backReceivedTime);
     const startDay = new Date(today);
-    startDay.setHours(0,0,0)
+    startDay.setHours(0, 0, 0);
     const endDay = new Date(today);
-    endDay.setHours(23,59,59)
+    endDay.setHours(23, 59, 59);
     // console.log(`startDay ${startDay}`)
     // console.log(`endDay ${endDay}`)
-    // find if there are attendence records on the same day.
+    // find if there are attendance records on the same day.
     const attendance = await Attendance.findOne({
       attendanceName: id,
       attendanceDate: {
@@ -259,10 +264,11 @@ router.post("/scanToday", verifyToken, async (req, res) => {
         $lte: endDay,
       },
     });
+    console.log(`THis is ATTENDANCE CHECKING STATEMENT TEST: ${attendance}`)
 
     //* if no records, create new record.
     // console.log(`This is before : ${backReceivedTime}`)
-    if(!attendance){
+    if (!attendance) {
       attendance = await Attendance.create({
         attendanceName: id,
         attendanceDate: startDay,
@@ -271,32 +277,36 @@ router.post("/scanToday", verifyToken, async (req, res) => {
             timeIn: backReceivedTime,
             timeOut: backReceivedTime,
             requirementsMet: "NA",
-          }
-        ]
-      })
+          },
+        ],
+      });
       //* if yes records, add to attendanceRecords.timeOut
     } else {
-      console.log(`You are seeing ELSE STATEMENT`)
+      //* THIS IS THE ISSUE!!! 
+      //! REDO THIS!!!
+      console.log(`BELOW IS UPDATING OF ATTENDANCE RECORD`);
 
-      const lastRecordsIdx = attendance.attendanceRecords.length -1
-
+      //const lastRecordsIdx = attendance.attendanceRecords.length - 1;  //* BACK UP COPY
+      const lastRecordsIdx = await attendance.attendanceRecords.length - 1;
+      console.log(`This is the last timeIn ${attendance.attendanceRecords[0]}`)    //! Error here.
+      console.log(`This is the last timeOut ${attendance.attendanceRecords[1]}`) 
+      console.log(`This is the last requirementsMet ${attendance.attendanceRecords[2]}`) 
       await Attendance.updateOne(
-      {_id: attendance._id},{
-        $set: {
-          [`attendanceRecords.${lastRecordsIdx}.timeOut`] : backReceivedTime
-        },
-      })
-  }
-    
+        { _id: attendance._id },
+        {
+          $set: {
+            [`attendanceRecords.${lastRecordsIdx}.timeOut`]: backReceivedTime,
+          },
+        }
+      );
+    }
 
-
-
-    res.status(200).json(attendance)
+    res.status(200).json(attendance);
   } catch (err) {
-
     res.status(500).json(err.message);
   }
 });
+//@endregion
 
 //#region
 // router.post("/filter", verifyToken, async (req, res) => {
@@ -371,6 +381,7 @@ router.post("/filter", verifyToken, async (req, res) => {
     //   )
     // }
 
+    
     // let filteredRecords = fetchData;
     // if (studentLevel) {
     //   filteredRecords = fetchData.filter(

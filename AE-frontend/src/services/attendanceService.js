@@ -49,6 +49,7 @@ const getFilteredAttendance = async (filters) => {
 };
 
 const postScanToday = async (formData) => {
+  console.log(formData)
   try {
     let retries = 2;
     let response;

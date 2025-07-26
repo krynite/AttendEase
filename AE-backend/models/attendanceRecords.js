@@ -23,6 +23,14 @@ const attendanceRecordsSchema = new Schema(
       // type: Number,
       // default: 0,
     },
+    scanEvents: [
+      {
+        time: {
+          type: Date,
+          required: true,
+        }
+      }
+    ],
   },
   {
     toJSON: { virtuals: true },
@@ -45,3 +53,4 @@ module.exports = {
   schema: attendanceRecordsSchema,
   model: RecordsModel,
 };
+
