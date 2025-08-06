@@ -1,6 +1,14 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
+const scanEventSchema = new Schema({
+  time: Date,
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 const attendanceRecordsSchema = new Schema(
   {
     timeIn: {
@@ -9,7 +17,7 @@ const attendanceRecordsSchema = new Schema(
     },
     timeOut: {
       type: Date,
-      required: true,
+      required: false,
     },
     //   timeDuration: {      //! Testing virtual below (works)
     //     type: Number,
@@ -20,17 +28,28 @@ const attendanceRecordsSchema = new Schema(
       type: String,
       enum: ["NA", "true", "false"], // NA for those not SCFA
       default: "NA",
-      // type: Number,
-      // default: 0,
+
     },
-    scanEvents: [
-      {
-        time: {
-          type: Date,
-          required: true,
-        }
-      }
-    ],
+    //* NEW scanEvents
+    scanEvents: [scanEventSchema]
+    
+    // {
+    //   time: Date,
+    //   createdAt: {
+    //     type: Date,
+    //     default: Date.now,
+    //   },
+    // },
+    // #region //*OLD scanEvents
+    // [
+    //   {
+    //     time: {
+    //       type: Date,
+    //       required: true,
+    //     }
+    //   }
+    // ],
+    // #endregion
   },
   {
     toJSON: { virtuals: true },
@@ -53,4 +72,3 @@ module.exports = {
   schema: attendanceRecordsSchema,
   model: RecordsModel,
 };
-

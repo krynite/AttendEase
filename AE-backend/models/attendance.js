@@ -27,7 +27,7 @@ const attendanceSchema = new Schema(
       type: Date,
       required: true,
     },
-    // referenced attendanceRecordsSchema
+    //* For now use Embedded attendanceRecordsSchema  || Future try Referenced. For larger and easier retrieval and analytics if needed. 
     attendanceRecords: attendanceRecordsSchema,
     // embeded comments to attendance documents
     comments: [attendanceCommentsSchema]

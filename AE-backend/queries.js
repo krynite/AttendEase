@@ -9,6 +9,7 @@ const Attendance = require("./models/attendance");
 const AttendanceRecord = require("./models/attendanceRecords");
 
 const bcrypt = require("bcrypt");
+const attendanceRecords = require("./models/attendanceRecords");
 
 const connect = async () => {
   // Connect to MongoDB using the MONGODB_URI specified in our .env file.
@@ -42,7 +43,6 @@ const createDefaultUsers = async () => {
   console.log(users);
 };
 // Used epoch dates: https://www.epochconverter.com/
-
 
 // #region  OLD TESTS
 const createDefaultStudents = async () => {
@@ -909,12 +909,12 @@ const testInsertAttendance = async () => {
   // await Attendance.deleteMany();
   const defaultAttendance = await Attendance.create([
     {
-      attendanceName: "681b083d71989331c5615d0a", // P1 Lucas Davis SCFA
-      attendanceDate: new Date(1753523811654),    // Jul 26, 2025, 9:56:51 AM UTC
+      attendanceName: "681b083d71989331c5615d19", // P3 Conner Coleman SCFA
+      attendanceDate: new Date(1753684302000), // Monday, July 28, 2025 6:31:42 AM
 
       attendanceRecords: {
-        timeIn: new Date("2025-07-26T01:00:00.000Z"),   // UTC
-        timeOut: new Date("2025-07-26T03:30:00.000Z"),  // UTC
+        timeIn: new Date("2025-07-26T01:00:00.000Z"), // UTC
+        timeOut: new Date("2025-07-26T03:30:00.000Z"), // UTC
 
         requirementsMet: "true",
 
@@ -928,9 +928,9 @@ const testInsertAttendance = async () => {
       comments: [
         {
           author: "Admin",
-          comment: "Initial attendance record created."
-        }
-      ]
+          comment: "Initial attendance record created.",
+        },
+      ],
     },
   ]);
 
@@ -1111,19 +1111,21 @@ const testAttendanceRecordsScanEvents = async () => {
 // #endregion
 
 const manualAddScanToday = async () => {
+  // await Attendance.deleteMany({});
   //* Student ID P1 Lucas Davis SCFA
   const inputStudentID = "681b083d71989331c5615d0a"; // P1 Lucas Davis SCFA
 
   //* Time Client + Server Time
-  const clientScanTime = new Date(1753362000000); // Jul 24, 2025, 1:00:00 PM UTC
+  const clientScanTime = new Date(1753684302000); // Monday, July 28, 2025 6:31:42 AM
+  // const normalizedDate = new Date(Date.now());
+  // const serverScanTime = normalizedDate.setUTCHours(0,0,0,0)
+  const normalizedDate = new Date(Date.now());
   const serverScanTime = new Date(Date.now());
-  // Time Test
-  // console.log("Client epoch time: ",Number(clientScanTime), clientScanTime) //* Jul 24, 2025, 1:00:00 PM UTC - 1753362000000
-  // console.log(serverScanTime)
 
+  // console.log(`serverScanTime: ${serverScanTime}`)
 
-//TODO - Test most efficient way. Redo backend schema
-/*
+  //TODO - Test most efficient way. Redo backend schema
+  /*
 Scan Route: Scan -> attendanceRecordsSchema -> scanEvents
 Within scanEvents:
 Options:
@@ -1131,18 +1133,16 @@ Options:
 2. Update timeOut and add it to scanEvents?
 */
 
-// 1753315200000  - Jul 24, 2025, 12:00:00 AM
-// 1753401599000 - Jul 24, 2025, 11:59:59 PM
-
-
+  // 1753315200000  - Jul 24, 2025, 12:00:00 AM
+  // 1753401599000 - Jul 24, 2025, 11:59:59 PMR
 
   try {
     const studentId = await Student.findById(inputStudentID);
     // console.log((studentId))    //? working
-    
+
     //* If student is Real.
-    if(!studentId){
-      console.log(`Student isn't in system.`)
+    if (!studentId) {
+      console.log(`Student isn't in system.`);
     } else {
       // console.log(studentId)
     }
@@ -1151,90 +1151,119 @@ Options:
     // YES - Add to array
     // NO - Create new Document
 
-    //* Time Range check base on SG Time - Note - Mongo will revert to ISO time during recording. 
-    const today = new Date(serverScanTime)
-    const startDay = new Date(today)
-    startDay.setHours(0,0,0)
-    const endDay = new Date(today)
-    endDay.setHours(23,59,59)
-    
+    //* Time Range check base on SG Time - Note - Mongo will revert to ISO time during recording.
+    let today = new Date(serverScanTime);
+    let startDay = new Date(today);
+    startDay.setUTCHours(0, 0, 0, 0);
+    let endDay = new Date(today);
+    endDay.setUTCHours(23, 59, 59, 999);
+
+    // console.log(`startday = ${startDay.toISOString()}`);
+    // console.log(`endDay = ${endDay.toISOString()}`);
+
     // console.log(`Today: ${today}`)
     // console.log(`${Number(startDay)} - ${startDay} - should be epoch: 1753315200000`)
     // console.log(Number(endDay))
 
     //* Find student's attendance and record as attendance
 
-    const attendance = await Attendance.find({
-      attendanceName: inputStudentID,   // inputStudentID = "681b083d71989331c5615d18"
+    let attendance = await Attendance.findOne({
+      attendanceName: inputStudentID,
       attendanceDate: {
-        // Testing UTC 24th July whole day
-        $gte: Number(startDay),  //2025-07-24T12:00:00.000Z AM UTC
-        $lte: Number(endDay),  //2025-07-24T12:59:59.000Z PM UTC
+        // Monday, July 28, 2025 6:31:42 AM
+        $gte: startDay,
+        $lte: endDay,
       },
-      attendanceRecords: {
-        $gte: Number(startDay),
-        $lte: Number(endDay),
-      },
-    })
 
-    console.log("attendance?",attendance)
+      // attendanceRecords: {
+      //   $gte: Number(startDay),
+      //   $lte: Number(endDay),
+      // },
+    });
+    console.log(`attendence Results: ${attendance}`);
+    console.log(`startday = ${startDay.toISOString()}`);
+    console.log(`endDay = ${endDay.toISOString()}`);
 
+    if (!attendance) {
+      attendance = await Attendance.create({
+        attendanceName: inputStudentID,
+        attendanceDate: startDay,
+        attendanceRecords: {
+          timeIn: serverScanTime,
+          timeOut: serverScanTime,
+          scanEvents: [{ serverScanTime }],
+        },
+      });
+    } else {
+      //* Update
+      console.log(
+        `this is testing new: ${attendance.attendanceRecords}`
+      );
 
+      //* Setup Conditions for update: Cannot scan within 2 mins.
 
+      let latestAttendanceRecord =
+        attendance.attendanceRecords.scanEvents[
+          attendance.attendanceRecords.scanEvents.length - 1
+        ].time;
 
+      console.log(`testint latest scan records: ${latestAttendanceRecord.getTime()}`)
+      console.log(`testing server getTime(): ${serverScanTime.getTime()}`)
+      console.log(`Time diff : ${serverScanTime.getTime() - latestAttendanceRecord.getTime()}`)
 
+      if (serverScanTime.getTime() - latestAttendanceRecord.getTime() > 120000  ) { //120000 2 mins
+        console.log(`testing if statements`)
+        let updateAttendance = await Attendance.findByIdAndUpdate(
+          attendance._id,
+          {
+            $push: {
+              "attendanceRecords.scanEvents": { time: serverScanTime },
+            },
+          }
+        );
+        console.log(`updateAttendance: ${updateAttendance}`);
+      }
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    console.log("attendance2?", attendance);
   } catch (err) {
-    console.log("manual test", err.message);
+    console.log("CATCH ERROR", err.message);
   }
 };
-
-
-
-
 
 // const testingUpdateStatus = async () => {
 //   //! works, but why the express side not working................
 //   // for testing updating status from pending to accepted.
 
-//TODO Use this ONLY to test the above functions.
-//TODO Remember to use AWAIT before running the functions
+const checkDataOnly = async () => {
+  const inputStudentID = "681b083d71989331c5615d0a"; // P1 Lucas Davis SCFA
+
+  const attendanceDateUTC = new Date(Date.now());
+  attendanceDateUTC.setUTCHours(0, 0, 0, 0);
+  console.log(`attendanceDate UTC: ${attendanceDateUTC}`);
+
+  try {
+    let data = await Attendance.findOne({
+      attendanceDate: attendanceDateUTC,
+    });
+    console.log(`DATA: ${data}`);
+  } catch (err) {
+    console.log(`Error Message is: ${err.message}`);
+  }
+};
+
+//* Use this ONLY to test the above functions.
+//* Remember to use AWAIT before running the functions
 const runQueries = async () => {
   console.log(`runQueris is running.`);
   // await createDefaultUsers(); // Create Default users.
   // await createDefaultStudents();
-  await testInsertAttendance(); //TODO Direct to DB works.
+  // await testInsertAttendance(); //TODO Direct to DB works.
   // await testInsertAttendanceRecords();
   // await createTestAttendanceWithoutIds();
   // await testAttendanceRecordsScanEvents();
-  // await manualAddScanToday();
+  await manualAddScanToday();
+  // await checkDataOnly();
 };
 
 connect();

@@ -1,0 +1,18 @@
+meta {
+  name: New Scan P3 Conner
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{HOST}}/attendance/scanToday
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "id": "681b083d71989331c5615d19",
+    "timeAll": 1753684302000
+  }
+}

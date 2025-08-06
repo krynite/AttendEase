@@ -1,18 +1,19 @@
 meta {
   name: Create new Attendance Record
   type: http
-  seq: 6
+  seq: 5
 }
 
 post {
-  url: {{HOST}}/attendance
+  url: {{HOST}}/attendance/filter
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "studentId": "67ce5322298c820947bc3725",
-    "attendanceDate": 1741772212000
+    "studentLevel": "all",
+    "attendanceStartEpoch": 1754265600000,
+    "attendanceEndEpoch": 1754783999999
   }
 }
