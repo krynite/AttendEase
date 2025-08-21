@@ -22,9 +22,7 @@ const getAllAttendance = async () => {
 };
 
 const getFilteredAttendance = async (filters) => {
-  console.log(
-    `---------------------------filters ${JSON.stringify(filters)}`
-  );
+  console.log(`---------------------------filters ${JSON.stringify(filters)}`);
   try {
     const response = await fetch(`${BASE_URL}/filter`, {
       method: "POST",
@@ -40,6 +38,7 @@ const getFilteredAttendance = async (filters) => {
       throw new Error(errorData.err || "Failed to fetch filtered attendance");
     }
     const data = await response.json();
+    // console.log(JSON.stringify(data))
     return data;
   } catch (err) {
     throw new Error(
@@ -49,7 +48,7 @@ const getFilteredAttendance = async (filters) => {
 };
 
 const postScanToday = async (formData) => {
-  console.log(formData)
+  console.log(`Entry to Records: ${JSON.stringify(formData)}`);
   try {
     let retries = 2;
     let response;
@@ -65,10 +64,27 @@ const postScanToday = async (formData) => {
           body: JSON.stringify(formData),
         });
 
-        if (response.ok) break;
+        if (response.ok) {
+          const data = await response.json();
+          if (response.status === 201) {
+            // console.log(`within 5 mins`);
+            // console.warn(await response.json())
+          }
+          return data;
+        }
 
         // If we get a 4xx client error, don't retry
-        if (response.status >= 400 && response.status < 500) break;
+        if (response.status >= 400 && response.status < 500) {
+          // if (response.status === 409){
+          //   let errResponse = await response.json()
+          //   if(errResponse.message.includes("less than 5 mins")){
+          //     console.log(`Must be less than 5 mins`)
+          //   }
+          // }
+          break;
+        }
+
+        // if (response.status === 500) break;
 
         // Otherwise, it's a server error - retry if we have retries left
         if (retries > 0) {
@@ -88,14 +104,15 @@ const postScanToday = async (formData) => {
       }
     }
 
-    if (!response.ok) {
+    if (response.status === 409) {
+      console.log(`testing special responses`);
       try {
         const errorData = await response.json();
 
         // Special handling for the 5-minute buffer message
         if (
           errorData.message &&
-          errorData.message.includes("less than 5 minutes")
+          errorData.message.includes("less than 2 minutes")
         ) {
           return errorData; // Return this as a valid response
         }
@@ -106,10 +123,11 @@ const postScanToday = async (formData) => {
         throw new Error(`Failed to record attendance: ${response.status}`);
       }
     }
-
-    return await response.json();
+    // console.log(response.json())
+    // return await response.json();
   } catch (err) {
-    console.error("Attendance scan error:", err);
+    console.error("Attendance scan error (Console.info):", err);
+
     throw err;
   }
 };

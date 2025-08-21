@@ -20,7 +20,7 @@ router.get("/", verifyToken, async (req, res) => {
     const students = await Student.find(
       {},
       "studentName enrollStatus scfaStatus role schoolName dateOfBirth gender"
-    ); // testing seaching other stuff.
+    ); // testing searching other stuff.
 
     const studentsWithLevel = students.map((student) => {
       const studentObj = student.toObject();

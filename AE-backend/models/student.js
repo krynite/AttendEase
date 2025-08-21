@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
+const { schema: enrollmentSchema } = require("./enrollment");
 
 const studentsSchema = new mongoose.Schema(
   {
@@ -12,6 +13,16 @@ const studentsSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    // enrollTracker: {
+    //   type: Array[Date],
+    //   required: false,
+    // },
+    enrollmentTracker: {
+      type: Schema.Types.ObjectId,
+      ref: "Enrollment",
+      default: "pending",
+    },
+
     scfaStatus: {
       type: String,
       required: true,
@@ -89,5 +100,11 @@ studentsSchema.virtual("studentLevel").get(function () {
   if (age === 12) return "P6";
   return "Above P6";
 });
+
+// studentsSchema.virtual("enrollTracker").get(function () {
+//   const today = new Date();
+//   const todayMonth = today.getMonth();
+//   const todayYear = today.getUTCFullYear();
+// });
 
 module.exports = model("Student", studentsSchema);

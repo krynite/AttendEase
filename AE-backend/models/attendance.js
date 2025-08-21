@@ -13,7 +13,6 @@ const attendanceCommentsSchema = new Schema(
       default: Date.now
     }
   }
-
 )
 
 const attendanceSchema = new Schema(

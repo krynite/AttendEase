@@ -1,0 +1,19 @@
+meta {
+  name: DashGetBar
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{HOST}}/dashboard
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "dashDate" : "1755521010000",
+    "lastMonth" : "1",
+    "dashSCFA" : false
+  }
+}

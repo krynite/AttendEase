@@ -27,8 +27,20 @@ const ScanAttendance = () => {
         timeAll: Date.now(), //+ (28888000)  // for sg time +8hrs  // Use libraries.
       };
 
-      await attendanceService.postScanToday(formData);
-      setMessage("Attendance recorded successfully");
+      let result = await attendanceService.postScanToday(formData);
+
+      console.log("result:", result);
+
+      // let statusMsg = await attendanceService.json().message
+      // console.log(`statusMsg: ${statusMsg}`)
+
+      // setMessage("Attendance recorded successfully");
+
+        if (result.message && result.message.includes("less than 5 minutes")) {
+          setMessage(result.message);
+        } else {
+          setMessage("Attendance recorded successfully");
+        }
 
       // Reset form
       setId("");
@@ -37,8 +49,6 @@ const ScanAttendance = () => {
     } catch (err) {
       console.log(`Submit scan error msg: ${err.message}`);
     }
-
-    
   };
 
   return (
@@ -46,10 +56,7 @@ const ScanAttendance = () => {
       <h1>Scan Attendance</h1>
       <ul>
         Sample ID
-        {/* <li>67ce5322298c820947bc3726 - for Steven</li>
-                <li>67ce5322298c820947bc3725 - for Jane</li>
-                <li>67ce5322298c820947bc3724 - for Morgan</li> */}
-        <li>681b083d71989331c5615d04 - for P1 Emily</li>
+        <li>681b083d71989331c5615d04 - P1 Emily</li>
         <li>681b083d71989331c5615d06 - P1 Nora Nelson</li>
         <li>681b083d71989331c5615d0a - P1 Lucas Davis SCFA </li>
         <li>681b083d71989331c5615d17 - P2 Cameron Brooks</li>

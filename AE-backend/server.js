@@ -13,6 +13,7 @@ const userRouter = require("./controllers/users");
 const authRouter = require("./controllers/auth");
 const studentRouter = require("./controllers/students");
 const attendanceRouter = require("./controllers/attendances");
+const dashboardRouter = require("./controllers/dashboards")
 
 // Set the port from environment variable or default to 3000
 const port = process.env.PORT ? process.env.PORT : "3000";
@@ -44,6 +45,7 @@ app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/students", studentRouter);
 app.use("/attendance", attendanceRouter);
+app.use("/dashboard", dashboardRouter);
 
 app.listen(port, () => {
   console.log(`The express app is ready on port ${port}!`);

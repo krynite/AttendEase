@@ -369,15 +369,22 @@ router.post("/filter", verifyToken, async (req, res) => {
   // test req
   // console.log(`TESTING REQ ${JSON.stringify(req.body)}`)
   const { studentLevel, attendanceStartEpoch, attendanceEndEpoch } = req.body;
-  console.log(`DATA RECEIVED STUDENT LEVEL: ${studentLevel}`);
-  console.log(`DATA RECEIVED START TIME: ${attendanceStartEpoch}`);
-  console.log(`DATA RECEIVED END TIME: ${attendanceEndEpoch}`);
+  // console.log(`DATA RECEIVED STUDENT LEVEL: ${studentLevel}`);
+  // console.log(`DATA RECEIVED START TIME: ${attendanceStartEpoch}`);
+  // console.log(`DATA RECEIVED END TIME: ${attendanceEndEpoch}`);
+
+  let startDay = new Date(attendanceStartEpoch)
+  startDay.setUTCHours(0,0,0,0)
+  let endDay = new Date(attendanceEndEpoch)
+  endDay.setUTCHours(23,59,59,9999)
+
+
 
   try {
     const fetchData = await Attendance.find({
       attendanceDate: {
-        $gte: Number(attendanceStartEpoch),
-        $lte: Number(attendanceEndEpoch),
+        $gte: Number(startDay),
+        $lte: Number(endDay),
       },
     }).populate({
       path: "attendanceName",

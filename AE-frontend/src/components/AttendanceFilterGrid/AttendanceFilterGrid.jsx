@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import '../../css/AttendanceFilterGrid.css';
 
 const AttendanceFilterGrid = ({ filteredAttendance }) => {
+
+    // console.log(`testing response data: ${JSON.stringify(filteredAttendance)}`)
     // Format date to a readable format
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -63,22 +65,22 @@ const AttendanceFilterGrid = ({ filteredAttendance }) => {
                                     <td>{record.attendanceName?.studentLevel || 'N/A'}</td>
                                     <td>{formatDate(record.attendanceDate)}</td>
                                     <td>
-                                        {record.attendanceRecords.length > 0
-                                            ? formatTime(record.attendanceRecords[0].timeIn)
+                                        {record.attendanceRecords?.timeIn? 
+                                        formatTime(record.attendanceRecords.timeIn)
                                             : 'N/A'}
                                     </td>
                                     <td>
-                                        {record.attendanceRecords.length > 0
-                                            ? formatTime(record.attendanceRecords[0].timeOut)
+                                        {record.attendanceRecords?.timeOut? 
+                                        formatTime(record.attendanceRecords.timeOut)
                                             : 'N/A'}
                                     </td>
                                     <td className={
-                                        record.attendanceRecords.length > 0
-                                            ? getDurationClass(record.attendanceRecords[0].timeDuration)
+                                        record.attendanceRecords?.timeDuration 
+                                            ? getDurationClass(record.attendanceRecords.timeDuration)
                                             : ''
                                     }>
-                                        {record.attendanceRecords.length > 0
-                                            ? formatDuration(record.attendanceRecords[0].timeDuration)
+                                        {record.attendanceRecords?.requirementsMet
+                                            ? formatDuration(record.attendanceRecords.timeDuration)
                                             : 'N/A'}
                                     </td>
                                     <td>
