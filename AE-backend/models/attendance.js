@@ -2,18 +2,15 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const { schema: attendanceRecordsSchema } = require("./attendanceRecords");
 
-
-// add comment to attendance document. 
-const attendanceCommentsSchema = new Schema(
-  {
-    author: String,
-    comment: String,
-    createdAt: {
-      type: Date,
-      default: Date.now
-    }
-  }
-)
+// add comment to attendance document.
+const attendanceCommentsSchema = new Schema({
+  author: String,
+  comment: String,
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
 
 const attendanceSchema = new Schema(
   {
@@ -26,10 +23,10 @@ const attendanceSchema = new Schema(
       type: Date,
       required: true,
     },
-    //* For now use Embedded attendanceRecordsSchema  || Future try Referenced. For larger and easier retrieval and analytics if needed. 
+    //* For now use Embedded attendanceRecordsSchema  || Future try Referenced. For larger and easier retrieval and analytics if needed.
     attendanceRecords: attendanceRecordsSchema,
     // embeded comments to attendance documents
-    comments: [attendanceCommentsSchema]
+    comments: [attendanceCommentsSchema],
   },
   {
     toJSON: { virtuals: true },
@@ -38,10 +35,5 @@ const attendanceSchema = new Schema(
   }
 );
 
-
-
-
 const AttendanceModel = mongoose.model("Attendance", attendanceSchema);
 module.exports = AttendanceModel;
-
-

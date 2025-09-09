@@ -13,14 +13,11 @@ const studentsSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
-    // enrollTracker: {
-    //   type: Array[Date],
-    //   required: false,
-    // },
     enrollmentTracker: {
       type: Schema.Types.ObjectId,
       ref: "Enrollment",
       default: "pending",
+      enum: ["pending","active","disabled"]
     },
 
     scfaStatus: {

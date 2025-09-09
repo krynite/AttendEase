@@ -7,9 +7,12 @@ const enrollmentSchema = new Schema({
     ref: "Student",
     required: true,
   },
-  enrollmentTracker: {
-    type: [Date],
-    required: true,
+  enrollmentData: {
+    type: Array,
+
+
+    
+    
   },
 });
 
